@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>科研成果与专家检索 Agent · 技术报告</title>
+<meta name="description" content="从领域检索失败诊断到文档级 Agent 执行。技术报告网页版。">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<style>
+  :root{
+    --ink:#1a1a1a; --body:#262626; --muted:#555; --faint:#777; --line:#999; --rule:#111;
+    --accent:#3e454c; --accent-bg:#ececec; --accent-line:#c8c8c8;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun","Times New Roman",Georgia,serif;
+    --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:#fff; color:var(--body); font-family:var(--serif);
+    line-height:1.95; font-size:16.5px; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:960px; margin:0 auto; padding:0 26px}
+  a{color:var(--ink); text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* 标题块 */
+  .titleblock{text-align:center; padding:72px 0 20px}
+  .titleblock h1{font-size:2.05em; line-height:1.35; margin:.35em 0 .25em; font-weight:700; color:var(--ink); letter-spacing:.01em}
+  .titleblock .sub{font-size:1.12em; color:#3a3a3a; font-weight:400}
+  .titleblock .meta{font-size:.82em; color:var(--faint); margin-top:22px}
+
+  /* 摘要 */
+  .abstract{margin:8px auto 0}
+  .abstract .lbl{text-align:center; font-weight:700; color:var(--ink); margin:6px 0 12px}
+  .abstract p{text-indent:2em; text-align:justify; margin:0 0 12px}
+  .abstract .keywords{text-indent:0; margin-top:14px}
+  .abstract .keywords b{font-weight:700}
+
+  /* 目录 */
+  .toc{margin:30px auto 6px; max-width:740px}
+  .toc .lbl{text-align:center; font-weight:700; margin-bottom:10px}
+  .toc ul{list-style:none; margin:0; padding:0; columns:2; column-gap:44px; font-size:14.5px}
+  .toc li{margin:0 0 7px; break-inside:avoid}
+  .toc a{color:var(--body)}
+
+  /* 章节 */
+  section{scroll-margin-top:20px; padding:44px 0 6px}
+  h2{font-size:1.52em; margin:0 0 4px; font-weight:700; color:var(--ink); line-height:1.4}
+  h3{font-size:1.14em; margin:34px 0 10px; font-weight:700; color:var(--ink)}
+  p{margin:0 0 14px; text-align:justify}
+  strong{font-weight:700}
+  .acc{color:var(--ink); font-weight:700}
+  p.key{background:var(--accent-bg); border-left:2px solid var(--accent-line); padding:6px 14px; margin:16px 0}
+  code{font-family:var(--mono); font-size:.88em; color:var(--ink)}
+  blockquote{margin:14px 0; padding:0 0 0 18px; border-left:3px solid #ccc; color:#3a3a3a}
+  .formula{text-align:center; margin:16px 0}
+
+  /* 代码块 / JSON */
+  pre{
+    background:none; border:2px solid #c9c9c9; padding:14px 18px; margin:16px 0;
+    font-family:var(--mono); font-size:12.5px; line-height:1.7; overflow-x:auto; color:var(--ink);
+  }
+  pre .tk-k{color:#111; font-weight:700}
+  pre .tk-s{color:#666}
+  pre .tk-n{color:#444}
+  pre .tk-p{color:#9a9a9a}
+  .terms{font-style:italic; margin:14px 0; padding:12px 18px; background:none; border:2px solid #c9c9c9; color:#3a3a3a; line-height:1.9}
+  pre code{font-family:inherit; font-size:inherit}
+
+  /* 图 */
+  figure{margin:28px 0; text-align:center}
+  .chart{width:100%; height:340px}
+  .chart.mini{height:300px}
+  figcaption{font-size:12.5px; color:var(--muted); margin-top:10px; line-height:1.65; text-align:center}
+  figcaption b{font-weight:700; color:var(--ink)}
+
+  /* 三线表 */
+  table{border-collapse:collapse; margin:24px auto; font-size:14px; max-width:100%; width:auto}
+  caption{caption-side:top; text-align:center; font-size:12.5px; color:var(--muted); margin-bottom:10px}
+  caption b{font-weight:700; color:var(--ink)}
+  thead th{border-top:1.5px solid var(--rule); border-bottom:.75px solid var(--rule); font-weight:700; padding:8px 16px; text-align:center; white-space:nowrap; color:var(--ink)}
+  tbody td{padding:7px 16px; text-align:center; border:none}
+  tbody tr:last-child td{border-bottom:1.5px solid var(--rule)}
+  table.def thead th, table.def tbody td{text-align:left}
+  table.def td{vertical-align:top}
+  td.num{font-variant-numeric:tabular-nums; font-family:var(--mono); font-size:13px}
+  tr.hl td{font-weight:700}
+
+  @media (max-width:760px){
+    .toc ul{columns:1}
+    .chart{height:300px}
+  }
+  @media (min-width:1400px){
+    .toc{
+      position:fixed; top:50%; left:0; transform:translateY(-50%);
+      width:220px; max-height:82vh; overflow-y:auto;
+      margin:0; max-width:none; padding:20px 14px 20px 20px;
+      background:#fff; border-right:1px solid #eee;
+      box-sizing:border-box; z-index:20;
+    }
+    .toc .lbl{text-align:left; margin-bottom:14px}
+    .toc ul{columns:1; font-size:13px}
+    .toc li{margin-bottom:9px}
+    .toc a{color:#666}
+    .toc a:hover{color:#111; text-decoration:none}
+    .toc a.active{color:#111; font-weight:700}
+  }
+  @media print{
+    body{color:#000}
+    a{color:#000}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- 标题 -->
+  <header class="titleblock">
+    <h1>科研成果与专家检索 Agent</h1>
+    <div class="sub">从领域检索失败诊断到文档级 Agent 执行</div>
+    <div class="meta">技术报告 · V1　|　对应材料：ppt-outline-v4.md 保持不变</div>
+  </header>
+
+  <!-- 摘要 -->
+  <div class="abstract">
+    <div class="lbl">摘　要</div>
+    <p>技术转移场景中的检索并不是普通的关键词搜索：企业用自然语言描述业务目标（例如「寻找能在高温环境工作的可降解食品包装涂层」），论文与专利则用材料体系、性能指标和实验条件描述同一技术，且同一需求的多个约束常分散在摘要、方法、结果或权利要求等不同位置。系统不仅要找到语义相关的论文与专利，还要沿作者或发明人关系发现潜在专家，并返回能追溯到原文的支撑证据。</p>
+    <p>本文从一个不含 Query 改写、模型微调和 Agent 的混合检索基线出发，依次研究 Query 表达敏感性、三路 Query 启动检索、检索失败分层、Dense Retriever 领域微调，以及候选文档进入 Agent 后的证据检查与专家发现。检索层使用 Sparse 与 Dense 并行召回、RRF 融合、通用 Reranker 重排和 <code>max(chunk_score)</code> 文档聚合；针对企业表达与科研语言之间的差距，系统在保留原始需求的同时，由 Parent Agent 一次生成术语扩展与约束扩展，并并行执行三路搜索。</p>
+    <p>结果显示：混合召回与通用 Reranker 将 <code>Pooled Recall@5</code> <strong class="acc">从 Sparse 基线的 0.54 提升至 0.72</strong>，<strong class="acc">三路 Query 再提升至 0.85</strong>。失败归因表明剩余问题集中在 Chunk 召回与初始证据覆盖，因此只微调 Dense Retriever；训练数据中高排名非 Anchor Chunk 的 <strong class="acc">Unsafe Negative Rate 达 43.0%</strong>，采用校准 Reranker 分流后，微调 Dense 将 <code>Relevant Chunk Recall@100</code> <strong class="acc">从 0.78 提升至 0.86</strong>、最终 <code>Pooled Recall@5</code> <strong class="acc">提升至 0.89</strong>。当检索已能稳定找到候选后，瓶颈转为约束核验、证据补全与跨文档专家聚合：连续 Parent Agent 与并行 Document Worker 的架构将 <strong class="acc">完整任务成功率从 0.71 提升至 0.86</strong>，同时降低长上下文压力与重复动作率。</p>
+    <p class="keywords"><b>关键词：</b>信息检索；Query 扩展；Dense Retrieval；Hard Negative；Agentic RAG；证据追踪；专家发现</p>
+  </div>
+
+  <!-- 目录 -->
+  <nav class="toc">
+    <div class="lbl">目　录</div>
+    <ul>
+      <li><a href="#s1">1　问题定义</a></li>
+      <li><a href="#s2">2　数据与评测协议</a></li>
+      <li><a href="#s3">3　最小检索基线</a></li>
+      <li><a href="#s4">4　Query 表达与三路启动检索</a></li>
+      <li><a href="#s5">5　检索失败分层与技术选择</a></li>
+      <li><a href="#s6">6　Dense 微调与 False Negative 控制</a></li>
+      <li><a href="#s7">7　RAG 的完成边界</a></li>
+      <li><a href="#s8">8　Agent 架构的三阶段演化</a></li>
+      <li><a href="#s9">9　工具与 Runtime 设计</a></li>
+      <li><a href="#s10">10　Expert 的跨 Document 聚合</a></li>
+      <li><a href="#s11">11　完整运行案例</a></li>
+      <li><a href="#s12">12　Agent 组织方式实验</a></li>
+      <li><a href="#s13">13　最终系统架构</a></li>
+      <li><a href="#s14">14　局限与风险</a></li>
+      <li><a href="#s15">15　结论</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============ 1 问题定义 ============ -->
+  <section id="s1">
+    <h2>1　问题定义</h2>
+
+    <h3>1.1　业务输入与科研语料之间的表达鸿沟</h3>
+    <p>企业需求往往从使用环境和业务目标出发：</p>
+    <blockquote>我们需要一种能在高温环境工作的可降解包装涂层，最好适合食品接触。</blockquote>
+    <p>科研文献则可能使用如下表达：</p>
+    <p class="terms">bio-based barrier coating<br>thermal stability<br>food-contact compliance<br>compostable polymer coating<br>oxygen and water-vapor barrier</p>
+    <p>两类文本描述的是同一个技术方向，但字面重合有限。传统关键词搜索容易遗漏术语不一致的相关成果；通用语义模型虽然能跨越部分词汇差距，仍面临科研领域偏移、专利语言特殊和多约束分散等问题。</p>
+
+    <h3>1.2　系统任务</h3>
+    <p>系统接受一条企业自然语言技术需求，返回三类结果：</p>
+    <p>（1）<strong>Document Result</strong>：与需求相关的论文或专利；（2）<strong>Expert Result</strong>：由相关成果及作者、发明人关系支持的潜在合作专家；（3）<strong>Evidence</strong>：支持 Document 或 Expert 相关性的原文 Chunk 与定位信息。</p>
+    <p>专家不是通过姓名、机构简介或研究标签直接匹配，而是沿着「需求 → 相关成果 → 作者或发明人 → 专家」的路径发现。这使专家推荐能够追溯到具体技术成果，而不是依赖模糊的个人画像。</p>
+
+    <h3>1.3　检索单位与返回单位</h3>
+    <p>系统在 <code>Chunk</code> 层执行召回与重排，在 <code>Document</code> 层组织候选，在 <code>Expert</code> 层聚合跨文档关系。Chunk Reranker 的分数被定义为「当前 Chunk 对原始需求提供局部技术证据的强度」，而不是「整个 Document 满足全部约束的概率」。因此：高分 Chunk 表明所属 Document 值得检查；低分 Chunk 不能直接证明整个 Document 不相关；一个 Document 是否满足多项约束，需要在 Document 内汇总多段证据；Reranker 不承担最终业务结论或 Document-level Verifier 的职责。</p>
+
+    <h3>1.4　系统边界</h3>
+    <p>系统负责回答：找到了哪些可能相关的科研成果、哪些原文支持相关性判断、哪些作者或发明人与这些成果存在可验证关系。系统不负责：生成材料配方或技术制备方案、判断成果是否具有商业化可行性、判断专利新颖性、保护范围或侵权风险，也不替代领域专家作出合作或投资决策。</p>
+  </section>
+
+  <!-- ============ 2 数据与评测协议 ============ -->
+  <section id="s2">
+    <h2>2　数据与评测协议</h2>
+
+    <h3>2.1　语料构成</h3>
+    <p>配置包含论文与专利两类语料。所有原文保留用于追溯，但候选生成阶段排除容易造成「引用即相关」误判的章节。</p>
+    <table>
+      <caption><b>表 1</b>　语料构成</caption>
+      <thead><tr><th>来源</th><th>Document 数</th><th>有效 Chunk 数</th><th>不参与正向候选的章节</th></tr></thead>
+      <tbody>
+        <tr><td>论文</td><td class="num">62,400</td><td class="num">486,000</td><td>Related Work、References</td></tr>
+        <tr><td>专利</td><td class="num">38,600</td><td class="num">612,000</td><td>Background</td></tr>
+        <tr class="hl"><td>合计</td><td class="num">101,000</td><td class="num">1,098,000</td><td>以上章节仍保留用于审计</td></tr>
+      </tbody>
+    </table>
+    <p>论文的 Introduction 不整体排除，因为许多论文会在其中直接概括自身方法与贡献。专利在最终 Top-K 前按 <code>patent_family_id</code> 去重，避免同一发明的不同公开版本挤占候选位。</p>
+
+    <h3>2.2　Query 与数据划分</h3>
+    <p>评测集包含 120 条企业技术需求，覆盖材料、包装、化工、制造与环境技术方向。</p>
+    <table>
+      <caption><b>表 2</b>　数据划分</caption>
+      <thead><tr><th>数据划分</th><th>Query 数</th><th>用途</th></tr></thead>
+      <tbody>
+        <tr><td>Train</td><td class="num">420 条合成 Query + Anchor Chunk</td><td>Dense 领域微调</td></tr>
+        <tr><td>Dev</td><td class="num">40 条人工需求</td><td>阈值、Prompt、预算与模型选择</td></tr>
+        <tr><td>Test</td><td class="num">80 条人工需求</td><td>冻结系统后的最终评测</td></tr>
+      </tbody>
+    </table>
+    <p>每条 Dev/Test Query 由人工提取核心约束，并构建 pooled candidate set：所有待比较系统的 Top-10 + Anchor Positive + 1 个随机 Document，去重后双人独立标注、冲突复核。共标注 1,846 个 Query–Document 对，双人标注的加权 Cohen's κ 为 0.81。</p>
+
+    <h3>2.3　相关性标签</h3>
+    <p>Document 使用三级相关性：Label 2 表示自身技术直接相关、能支持核心需求；Label 1 表示部分相关、只覆盖部分条件或相关性较弱；Label 0 表示不相关。仅在 Related Work、References 或 Patent Background 中描述了相关技术，不会使当前 Document 获得 Label 1 或 2。训练阶段的 Query–Chunk 标签与 Document 标签分开：C2 直接支持（pseudo-positive）、C1 部分支持或证据不足（mask）、C0 不相关（hard negative）。</p>
+
+    <h3>2.4　核心指标</h3>
+    <p><strong>Pooled Recall@5</strong> 衡量人工确认的强相关 Document 有多少进入前五名：</p>
+    <div class="formula"><i>G<sub>q</sub></i> = judged pool 中所有 Label 2 Document<br>$$\text{Pooled Recall@5}(q) = \frac{\left|\text{Top-5}(q) \cap G_q\right|}{|G_q|}$$</div>
+    <p><strong>nDCG@10</strong> 使用 0/1/2 三级相关性，衡量相关结果是否排在前面。<strong>Relevant Chunk Recall@M</strong> 在 Reranker 前测量相关 Chunk 是否进入候选池，是 Dense Retriever 的直接验收指标。</p>
+    <p>Agent 阶段额外使用：Document Task Success（最终 Document 是否满足任务定义并带证据）、Evidence Core-constraint Coverage（核心约束中获得明确证据的比例）、Expert Task Success（专家身份、来源成果与代表作是否完整）、Action Duplication Rate（无新增信息的重复工具调用占比），以及 Token、缓存命中率、P95 延迟与单任务归一化成本。所有系统比较使用相同 Query 的配对差值，并以 Query 为单位执行 bootstrap，报告 95% 置信区间。</p>
+  </section>
+
+  <!-- ============ 3 最小检索基线 ============ -->
+  <section id="s3">
+    <h2>3　最小检索基线</h2>
+
+    <h3>3.1　基线架构</h3>
+    <p>第一版系统不改写 Query、不训练模型，也不使用 Agent。Sparse 与 Dense 各自召回 Chunk，RRF 对异构分数做基于排名的融合，通用 Reranker 统一使用企业原始需求与固定任务 instruction 对候选 Chunk 重排。</p>
+    <figure>
+      <svg viewBox="0 0 560 160" style="width:100%;max-width:560px;margin:8px auto;display:block;font-size:12px" aria-label="最小检索基线管线">
+        <defs>
+          <marker id="m1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+          </marker>
+        </defs>
+        <rect x="20" y="22" width="96" height="36" fill="#fff" stroke="#333"/>
+        <text x="68" y="45" text-anchor="middle" fill="#1a1a1a">企业原始需求</text>
+        <line x1="116" y1="40" x2="138" y2="40" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+        <rect x="142" y="22" width="148" height="36" fill="#fff" stroke="#333"/>
+        <text x="216" y="38" text-anchor="middle" fill="#1a1a1a">Sparse Top-K</text>
+        <text x="216" y="51" text-anchor="middle" fill="#1a1a1a">+ Dense Top-K</text>
+        <line x1="290" y1="40" x2="312" y2="40" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+        <rect x="316" y="22" width="78" height="36" fill="#fff" stroke="#333"/>
+        <text x="355" y="45" text-anchor="middle" fill="#1a1a1a">RRF 融合</text>
+        <line x1="394" y1="40" x2="416" y2="40" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+        <rect x="420" y="22" width="108" height="36" fill="#fff" stroke="#333"/>
+        <text x="474" y="45" text-anchor="middle" fill="#1a1a1a">通用 Reranker</text>
+
+        <path d="M474,58 L474,86 L68,86 L68,112" fill="none" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+
+        <rect x="20" y="116" width="96" height="36" fill="#fff" stroke="#333"/>
+        <text x="68" y="139" text-anchor="middle" fill="#1a1a1a">Chunk 得分</text>
+        <line x1="116" y1="134" x2="138" y2="134" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+        <rect x="142" y="116" width="90" height="36" fill="#fff" stroke="#333"/>
+        <text x="187" y="139" text-anchor="middle" fill="#1a1a1a">max 聚合</text>
+        <line x1="232" y1="134" x2="254" y2="134" stroke="#555" stroke-width="1.2" marker-end="url(#m1)"/>
+        <rect x="258" y="116" width="200" height="36" fill="#fff" stroke="#333" stroke-width="1.5"/>
+        <text x="358" y="131" text-anchor="middle" font-weight="700" fill="#1a1a1a">Document Top-K</text>
+        <text x="358" y="144" text-anchor="middle" font-weight="700" fill="#1a1a1a">+ Top-3 Evidence</text>
+      </svg>
+      <figcaption><b>图 1</b>　最小检索基线的管线。最终文档分数为 document_score(d) = max(score(c))，并保留每篇候选得分最高的 3 个 Chunk 作为 Initial Evidence。</figcaption>
+    </figure>
+    <p>max 聚合并不声称整篇文档已经满足全部需求，它只表达：只要一篇 Document 中存在一段强相关局部证据，该文档就值得进入后续检查。</p>
+
+    <h3>3.2　组件消融</h3>
+    <figure>
+      <div id="chart2" class="chart"></div>
+      <figcaption><b>图 2</b>　基线组件消融（R0–R3）。Sparse 能稳定找到包含明确材料名、工艺名和标准号的结果；Dense 对自然语言与科研表达之间的语义差距更鲁棒；两者合并存在互补收益。Reranker 对 Recall@5 的提升小于对 nDCG@10 的提升，说明它的主要贡献是把局部证据更强的 Chunk 排到前面。</figcaption>
+    </figure>
+    <p class="key">这一结果确定了后续所有实验的共同底座：<strong>Sparse + Dense + RRF + 通用 Reranker</strong>，后续技术必须在这一基线上证明独立增益。</p>
+  </section>
+
+  <!-- ============ 4 Query 表达与三路启动检索 ============ -->
+  <section id="s4">
+    <h2>4　Query 表达与三路启动检索</h2>
+
+    <h3>4.1　同一需求的表达敏感性</h3>
+    <p>为了区分「需求信息缺失」和「同一语义的表达差异」，实验保持四项约束（包装涂层、可降解、耐高温、食品接触）不变，只改变语言形式：术语对齐、企业自然、口语隐式。</p>
+    <figure>
+      <div id="chart3" class="chart"></div>
+      <figcaption><b>图 3</b>　同一需求、三种表达的 R0–R3 Recall@5。即使需求语义和约束保持不变，R3 在「术语对齐」与「口语隐式」之间仍相差 17 个百分点，说明现有检索模型对表达形式敏感，也说明 Query 扩展存在可恢复空间。但术语对齐表达是人工诊断上界，不是可直接部署的生产输入。</figcaption>
+    </figure>
+
+    <h3>4.2　为什么不直接替换原始 Query</h3>
+    <p>LLM 改写可能删除企业原始需求中的弱表达约束、将「最好」「可选」等软约束误写成强约束、加入原始需求没有声明的材料或法规，或用看似专业但过窄的术语限制召回。因此系统不使用单个改写 Query 覆盖用户原文，而是把原始需求保留为安全分支。Parent 在任务开始时只调用一次结构化生成，输出约束与两条互补扩展：</p>
+    <pre>{
+  "normalized_requirement": "高温环境下仍保持性能的可降解食品包装涂层",
+  "target_types": ["paper", "patent", "expert"],
+  "core_constraints": [
+    {"id": "C1", "requirement": "高温环境或热稳定性"},
+    {"id": "C2", "requirement": "可降解包装涂层"},
+    {"id": "C3", "requirement": "适合食品接触"}
+  ],
+  "expansion_queries": [
+    {"id": "Q2", "role": "terminology",
+     "text": "bio-based compostable barrier coating with thermal stability and food-contact compliance"},
+    {"id": "Q3", "role": "constraint-focused",
+     "text": "food packaging coating retaining barrier performance under heat and satisfying biodegradability requirements"}
+  ]
+}</pre>
+    <p class="key"><code>Q1</code> 始终是未经改写的原始需求，<code>Q2</code> 是术语扩展，<code>Q3</code> 是约束聚焦扩展。三者并行执行，候选跨 Query 合并去重，最后统一使用原始需求进行 Reranker 重排。这样，LLM 生成错误主要增加候选噪声，<strong>不会删除原始分支能够找到的结果</strong>。</p>
+
+    <h3>4.3　一路、两路与三路的递增对照</h3>
+    <figure>
+      <div id="chart4" class="chart mini"></div>
+      <figcaption><b>图 4</b>　一路/两路/三路的递增对照。三路 Search Calls 从 1 增至 3，但因为并行执行，P95 延迟仅从 0.98 秒增加到 1.42 秒，而不是三倍。</figcaption>
+    </figure>
+    <p>补充诊断：Q2 每条需求新增 0.48 个 Label 2 Document，Q3 新增 0.31 个；Q2/Q3 近重复率 8.3%；三路 All-core-preserved rate 98.8%；Hallucinated Constraint Rate 1.8%。Q2 主要弥补专业术语差距，Q3 主要强调容易在长需求中被稀释的性能或使用条件。三路方案与人工扩展上界仍有 3 个百分点差距，但取得了稳定的独占相关成果，因此被保留为默认启动策略。</p>
+  </section>
+
+  <!-- ============ 5 检索失败分层与技术选择 ============ -->
+  <section id="s5">
+    <h2>5　检索失败分层与技术选择</h2>
+
+    <h3>5.1　为什么必须先归因</h3>
+    <p>「没有找到相关成果」可能发生在完全不同的层级。如果不做分层归因，很容易用模型微调掩盖语料缺失、解析错误或聚合规则问题。系统对每个未进入可信结果的 Gold Document 从 F0 到 F5 顺序检查，并将其归到最早失败层，一旦命中即停止，避免同一案例被重复计算。</p>
+    <table class="def">
+      <caption><b>表 3</b>　检索失败分层定义</caption>
+      <thead><tr><th>层级</th><th>失败类型</th><th>判断条件</th></tr></thead>
+      <tbody>
+        <tr><td>F0</td><td>Corpus / Metadata</td><td>文档缺失，或作者、来源类型等元数据错误</td></tr>
+        <tr><td>F1</td><td>Parse / Section</td><td>技术内容未正确解析，或章节被错误排除</td></tr>
+        <tr><td>F2</td><td>Chunk Recall</td><td>相关 Chunk 未进入三路合并候选池</td></tr>
+        <tr><td>F3</td><td>Chunk Rerank</td><td>已召回相关 Chunk，但被排到截断线之后</td></tr>
+        <tr><td>F4</td><td>Document Aggregation / Dedup</td><td>Chunk 排名足够，但 Document 未进入 Top-K</td></tr>
+        <tr><td>F5</td><td>Initial Evidence Coverage</td><td>Document 已进入 Top-K，但 Initial Evidence 未覆盖核心约束</td></tr>
+      </tbody>
+    </table>
+
+    <h3>5.2　Paper 与 Patent 失败分布</h3>
+    <figure>
+      <div id="chart5" class="chart mini"></div>
+      <figcaption><b>图 5</b>　Paper 与 Patent 的 F0–F5 失败分布。F2 在论文和专利中都是最大失败来源，说明三路 Query 之后仍存在领域召回不足。专利的 F1 与 F4 更高，主要来自段落结构、实施例长列表和专利家族重复。F5 则表明，候选已经找到后，Initial Evidence 仍经常只覆盖部分条件。</figcaption>
+    </figure>
+
+    <h3>5.3　技术选择</h3>
+    <p>归因结果直接限制了优化范围：</p>
+    <table class="def">
+      <caption><b>表 4</b>　归因驱动的技术选择</caption>
+      <thead><tr><th>观察</th><th>决策</th></tr></thead>
+      <tbody>
+        <tr><td>F2 是主要瓶颈</td><td>微调 Dense Retriever</td></tr>
+        <tr><td>F3 较低</td><td>保留现成 Reranker 与固定 instruction</td></tr>
+        <tr><td>F4 可由章节规则和 family 去重控制</td><td>保留 max 聚合，不引入复杂 Document Scorer</td></tr>
+        <tr><td>F5 明显存在</td><td>交给候选进入后的文档检查，不继续堆叠在线排序组件</td></tr>
+      </tbody>
+    </table>
+    <p class="key">这一轮<strong class="acc">只改变 Dense Retriever</strong>，Reranker、Document 聚合、候选预算和 Query 组合全部冻结，使微调收益可以被独立识别。</p>
+  </section>
+
+  <!-- ============ 6 Dense 微调与 False Negative 控制 ============ -->
+  <section id="s6">
+    <h2>6　Dense 微调与 False Negative 控制</h2>
+
+    <h3>6.1　训练样本构造</h3>
+    <p>训练 Query 从候选有效章节中的 Anchor Chunk 生成：Anchor Chunk → 生成企业式 Query → 当前 Dense 挖掘 Top-ranked Non-anchor Chunks → 构造 Positive / Mask / Hard Negative。Anchor 只说明 Query 由哪个 Chunk 生成，不说明它是唯一正例。高排名非 Anchor 可能包含三类内容：另一篇文档中的直接相关技术、只支持部分条件而不能安全标负的 Chunk、以及术语相似但技术目标不同的真正 Hard Negative。若把所有非 Anchor 全部标负，对比学习会主动降低 Query 与真实相关 Chunk 的相似度，制造新的召回失败。</p>
+
+    <h3>6.2　高排名候选人工审计</h3>
+    <p>从 420 条训练 Query 的高排名非 Anchor 候选中分层抽样 960 个 Query–Chunk 对。</p>
+    <table>
+      <caption><b>表 5</b>　高排名非 Anchor 候选的人工审计</caption>
+      <thead><tr><th>标签</th><th>数量</th><th>比例</th><th>训练含义</th></tr></thead>
+      <tbody>
+        <tr><td>C2 直接支持</td><td class="num">163</td><td class="num">17.0%</td><td>False Negative，不能标负</td></tr>
+        <tr><td>C1 部分支持或证据不足</td><td class="num">250</td><td class="num">26.0%</td><td>不安全样本，默认 Mask</td></tr>
+        <tr><td>C0 不相关</td><td class="num">547</td><td class="num">57.0%</td><td>可作为 Hard Negative</td></tr>
+      </tbody>
+    </table>
+    <p>由此得到 False Negative Rate = 17.0%、<strong class="acc">Unsafe Negative Rate = 43.0%</strong>。专利候选的 Unsafe Negative Rate 为 48.2%，高于论文的 38.7%——专利中的可选材料枚举和分散实施例更容易产生局部相关但证据不足的 Chunk。</p>
+
+    <h3>6.3　四种负例处理策略</h3>
+    <figure>
+      <div id="chart6" class="chart"></div>
+      <figcaption><b>图 6</b>　四种负例处理策略。横轴为错误标负率（越低越好），纵轴为 Pooled Recall@5（越高越好），气泡大小代表相对处理成本。N0 把所有非 Anchor 全标负；N1 用校准 Reranker 分流；N2 用 Prompted Teacher 按固定 Rubric 分流；N3 为人工分流（诊断上界）。</figcaption>
+    </figure>
+    <p>校准 Reranker 的 sigmoid 分数不被解释为真实概率。Dev 人工审计集只用于选择两个阈值：高阈值追求 pseudo-positive precision，低阈值追求 hard-negative precision，中间区域直接 Mask。Prompted Teacher 比校准 Reranker 多取得约 1 个百分点 Recall，但处理成本增加 35% 以上，且没有显著缩小与人工上界的差距，因此<strong class="acc">最终选择 N1</strong>。Teacher 只保留为离线诊断工具，不进入默认数据管线。</p>
+
+    <h3>6.4　Dense 微调结果</h3>
+    <p>两个版本使用相同的 Q1/Q2/Q3、Sparse 结果、RRF、Reranker、候选预算、max 聚合和人工 Test qrels，唯一变量是 Dense 模型权重。</p>
+    <figure>
+      <div id="chart7" class="chart mini"></div>
+      <figcaption><b>图 7</b>　微调前后对比。Relevant Chunk Recall@100 从 0.78 提升至 0.86（+0.08），并传递到 Document Recall（Pooled Recall@5 从 0.85 到 0.89）。按来源切片：Paper 0.86→0.90（+0.04），Patent 0.82→0.87（+0.05）。在线调用数不变，新增成本主要来自离线训练、模型版本和数据管线维护。</figcaption>
+    </figure>
+    <p class="key">Dense 微调首先修复了直接目标——<strong class="acc">相关 Chunk 没有进入候选池</strong>，这一增益随后传递到 Document Recall。</p>
+  </section>
+
+  <!-- ============ 7 RAG 的完成边界 ============ -->
+  <section id="s7">
+    <h2>7　RAG 的完成边界</h2>
+
+    <h3>7.1　候选命中不等于任务完成</h3>
+    <p>微调后的 RAG 达到：Relevant Chunk Recall@100 = 0.86、<strong class="acc">Candidate Document Recall@10 = 0.94</strong>、Pooled Recall@5 = 0.89、nDCG@10 = 0.83、<strong class="acc">Initial Evidence Core-constraint Coverage = 0.66</strong>。</p>
+    <figure>
+      <div id="chart8" class="chart mini"></div>
+      <figcaption><b>图 8</b>　RAG 的完成边界。候选文档召回已经达到 0.94，但 Initial Evidence 对核心约束的覆盖只有 0.66——两者的差距解释了为什么继续优化 Reranker 不能直接完成任务：正确文档往往已经出现，只是当前最高分 Chunk 没有包含所有判断所需的信息。</figcaption>
+    </figure>
+    <p>例如，一个 Chunk 可能清楚说明材料是可降解涂层，另一个 Chunk 才报告高温后的阻隔性能，食品接触信息则可能位于实验标准或应用讨论中。Reranker 对每个局部 Chunk 打分，无法替代跨 Chunk 的约束判断。</p>
+
+    <h3>7.2　职责交接</h3>
+    <p>RAG 的职责是：找到值得检查的 Candidate Document，返回 Initial Chunks 与来源 Query。Agent 的职责是：判断 Document 是否在主题内、检查 Initial Chunk 支持了哪些约束、围绕缺失约束执行文档内搜索、发现并校验 Expert、选择结果并停止。RAG 的停止门槛不是「每个约束都已经由 Initial Evidence 证明」，而是「值得检查的候选稳定进入有限集合，继续堆叠在线检索组件的边际收益低于执行层的补证据收益」。</p>
+  </section>
+
+  <!-- ============ 8 Agent 架构的三阶段演化 ============ -->
+  <section id="s8">
+    <h2>8　Agent 架构的三阶段演化</h2>
+
+    <h3>8.1　阶段一：单 Agent 连续处理</h3>
+    <p>最初实现让一个 Agent 在同一会话中依次检查所有候选：D1 Chunks + D2 Chunks + D3 Chunks + Query / Action / Observation + Expert Metadata 全部进入单一连续上下文。这种方式最容易实现，也能保持稳定的会话前缀；但随着候选增多，模型每轮都要从混合历史中恢复各 Document 的检查进度、约束覆盖和剩余动作，完整原文不断进入主上下文，旧 Document 的内容会干扰当前判断。长上下文并不等于模型能够稳定使用其中的所有信息，信息的位置和上下文长度会显著影响模型表现，特别是信息位于长上下文中部时。</p>
+
+    <h3>8.2　阶段二：State 维护全局过程</h3>
+    <p>第二阶段将过程抽成 Runtime 维护的 Canonical State（Task / Result / Recent Actions / Documents / Experts / Budget），Prompt Builder 将其确定性渲染为「Static Prefix + Markdown State View + Latest Observation → 下一步 Action」。State 解决了过程可审计、循环检测和状态结构化问题，但每轮重组完整 State View 会改变 Prompt 后半部分，降低缓存复用，并把所有 Document 的状态继续交给同一个 Agent 处理。它是有价值的工程中间态，但不是最终主上下文方案。</p>
+
+    <h3>8.3　阶段三：连续 Parent + Document Worker</h3>
+    <p>最终架构保留 Parent 的连续上下文，把每篇 Document 的检查隔离给独立 Worker：</p>
+    <figure>
+      <svg viewBox="0 0 960 250" style="width:100%;max-width:960px;margin:8px auto;display:block;font-size:12px" aria-label="连续 Parent 与并行 Document Worker">
+        <defs>
+          <marker id="m9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+          </marker>
+        </defs>
+        <rect x="16" y="16" width="76" height="34" fill="#fff" stroke="#333"/>
+        <text x="54" y="38" text-anchor="middle" fill="#1a1a1a">User Query</text>
+        <line x1="92" y1="33" x2="112" y2="33" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="112" y="16" width="90" height="34" fill="#fff" stroke="#333"/>
+        <text x="157" y="38" text-anchor="middle" font-weight="700" fill="#1a1a1a">Parent Agent</text>
+        <line x1="202" y1="33" x2="222" y2="33" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="222" y="16" width="96" height="34" fill="#fff" stroke="#333"/>
+        <text x="270" y="38" text-anchor="middle" fill="#1a1a1a">initial_search</text>
+        <line x1="318" y1="33" x2="338" y2="33" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="338" y="16" width="150" height="34" fill="#fff" stroke="#333"/>
+        <text x="413" y="38" text-anchor="middle" fill="#1a1a1a">Candidate Documents</text>
+        <line x1="488" y1="33" x2="508" y2="33" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="508" y="16" width="116" height="34" fill="#fff" stroke="#333"/>
+        <text x="566" y="38" text-anchor="middle" fill="#1a1a1a">check_documents</text>
+
+        <path d="M566,50 L566,72" fill="none" stroke="#555" stroke-width="1.2"/>
+        <line x1="464" y1="72" x2="668" y2="72" stroke="#555" stroke-width="1.2"/>
+        <line x1="464" y1="72" x2="464" y2="96" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <line x1="566" y1="72" x2="566" y2="96" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <line x1="668" y1="72" x2="668" y2="96" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+
+        <rect x="421" y="100" width="86" height="34" fill="#fff" stroke="#333"/>
+        <text x="464" y="122" text-anchor="middle" fill="#1a1a1a">Worker D1</text>
+        <rect x="523" y="100" width="86" height="34" fill="#fff" stroke="#333"/>
+        <text x="566" y="122" text-anchor="middle" fill="#1a1a1a">Worker D2</text>
+        <rect x="625" y="100" width="86" height="34" fill="#fff" stroke="#333"/>
+        <text x="668" y="122" text-anchor="middle" fill="#1a1a1a">Worker D3</text>
+
+        <path d="M464,134 L464,158" fill="none" stroke="#555" stroke-width="1.2"/>
+        <path d="M566,134 L566,158" fill="none" stroke="#555" stroke-width="1.2"/>
+        <path d="M668,134 L668,158" fill="none" stroke="#555" stroke-width="1.2"/>
+        <line x1="464" y1="158" x2="668" y2="158" stroke="#555" stroke-width="1.2"/>
+        <path d="M566,158 L566,180" fill="none" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+
+        <rect x="466" y="184" width="200" height="34" fill="#fff" stroke="#333" stroke-width="1.5"/>
+        <text x="566" y="206" text-anchor="middle" font-weight="700" fill="#1a1a1a">JSON Document Result</text>
+        <line x1="666" y1="201" x2="688" y2="201" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="688" y="184" width="84" height="34" fill="#fff" stroke="#333"/>
+        <text x="730" y="206" text-anchor="middle" font-weight="700" fill="#1a1a1a">Parent</text>
+        <line x1="772" y1="201" x2="794" y2="201" stroke="#555" stroke-width="1.2" marker-end="url(#m9)"/>
+        <rect x="794" y="184" width="140" height="34" fill="#fff" stroke="#333"/>
+        <text x="864" y="201" text-anchor="middle" fill="#1a1a1a">Expert Resolution</text>
+        <text x="864" y="214" text-anchor="middle" fill="#1a1a1a">More Search / Finish</text>
+      </svg>
+      <figcaption><b>图 9</b>　连续 Parent + 并行 Document Worker。Worker 之间相互独立，可并行检查；Parent 不接收 Worker 的完整对话，只接收结构化结果。</figcaption>
+    </figure>
+    <p>Parent 在同一会话中承担两个连续阶段：<strong>Planner Phase</strong>（解析需求、提取约束、生成 Q2/Q3 并启动初次检索，一次性角色）与 <strong>Controller Phase</strong>（接收候选、分派 Worker、追加全局搜索、处理 Expert 关系并决定停止）。每个 Worker 的输入是一个 Document、任务约束、Initial Chunks 与局部预算，输出是一个结构化 Document Result，不能修改其他 Document、做全局排序、选择最终 Expert 或结束任务。Worker 的局部上下文短而连续，多篇 Document 可以并行检查。Canonical State 继续由 Runtime 维护，用于监控、预算、恢复和审计，但不再作为完整快照覆盖 Parent Prompt。</p>
+  </section>
+
+  <!-- ============ 9 工具与 Runtime 设计 ============ -->
+  <section id="s9">
+    <h2>9　工具与 Runtime 设计</h2>
+
+    <h3>9.1　工具从信息缺口倒推</h3>
+    <p>工具不是为了展示 Agent 能调用多少接口，而是对应模型在不同阶段缺少的信息。</p>
+    <table class="def">
+      <caption><b>表 6</b>　工具与所解决的信息缺口</caption>
+      <thead><tr><th>调用者</th><th>工具</th><th>解决的信息缺口</th></tr></thead>
+      <tbody>
+        <tr><td>Parent</td><td><code>initial_search</code></td><td>初次取得三路候选与 Initial Chunks</td></tr>
+        <tr><td>Parent</td><td><code>search_documents</code></td><td>全局追加搜索，或在 expert_scope 内检索代表作</td></tr>
+        <tr><td>Parent</td><td><code>check_documents</code></td><td>并行分派 Document Worker</td></tr>
+        <tr><td>Parent</td><td><code>resolve_expert</code></td><td>校验 Expert 身份与来源成果关系</td></tr>
+        <tr><td>Parent</td><td><code>finish</code></td><td>选择最终 Document、Expert 与 Evidence</td></tr>
+        <tr><td>Worker</td><td><code>read_document_overview</code></td><td>判断文档整体主题，避免只凭局部 Chunk 误判</td></tr>
+        <tr><td>Worker</td><td><code>search_within_document</code></td><td>围绕缺失约束在当前文档内重新检索</td></tr>
+        <tr><td>Worker</td><td><code>inspect_chunks</code></td><td>读取指定 Chunk 内容并核对元数据</td></tr>
+      </tbody>
+    </table>
+    <p><code>search_within_document</code> 对 Worker 开放 Query，因为初始三路 Query 面向全局召回，不一定是最适合当前文档或当前缺失约束的表达；Worker 可以根据已读 Evidence 生成更具体的文档内 Query，但搜索结果本身不提供 Coverage 标签，只有 Worker 阅读 Chunk 后才能判断支持、部分支持或不支持。<code>read_document_overview</code> 支持读取 Abstract、Conclusion、Claims Summary 等核心章节，用于判断整篇文档主题。<code>inspect_chunks</code> 返回 Chunk 原文和 canonical metadata；当 Worker 请求的 document_id 与 Chunk 实际归属不一致时，Runtime 返回显式错误，防止把其他文档的证据挂到当前 Document。</p>
+
+    <h3>9.2　Document Worker Result</h3>
+    <pre>{
+  "document_id": "D1",
+  "title": "Bio-based barrier coating for food packaging",
+  "document_type": "paper",
+  "matched_query_ids": ["Q1", "Q3"],
+  "authors": [
+    {"expert_id": "X1", "name": "Alice Zhang", "role": "author"}
+  ],
+  "topic_match": "on_topic",
+  "coverage": {
+    "C1": {"status": "supported", "chunk_ids": ["C-D1-001"]},
+    "C2": {"status": "supported", "chunk_ids": ["C-D1-004"]},
+    "C3": {"status": "partial",   "chunk_ids": ["C-D1-009"]}
+  },
+  "worker_stop_reason": "local_budget_exhausted"
+}</pre>
+    <p>每个字段都有明确消费者：<code>matched_query_ids</code> 解释候选来源与 Query 边际贡献；<code>authors</code> 产生 Expert 候选；<code>topic_match</code> 排除整体偏题 Document；<code>coverage</code> 用于判断结果充分性并加载 Evidence；<code>worker_stop_reason</code> 供 Runtime 监控预算和失败恢复。Chunk 原文不会进入 Parent 主上下文，最终输出时程序根据 <code>chunk_ids</code> 从 Evidence Store 加载原文、页码、章节和定位信息。</p>
+
+    <h3>9.3　Runtime 职责</h3>
+    <p><strong class="acc">Runtime 不做语义 Coverage 判断，只负责可靠执行</strong>：校验 Document、Chunk 与 Expert ID；合并重复 Document Result；限制 Worker 并发数和局部预算；更新 Canonical State、Trace 与 Budget；保存 Query、Tool Arguments、Observation 摘要与 Evidence；在失败后恢复尚未完成的 Worker；组装最终证据文本。这一边界避免程序规则假装理解语义，也避免模型承担本可由确定性代码完成的 ID 校验、去重和预算控制。</p>
+  </section>
+
+  <!-- ============ 10 Expert 的跨 Document 聚合 ============ -->
+  <section id="s10">
+    <h2>10　Expert 的跨 Document 聚合</h2>
+    <p>Document 可以局部隔离，Expert 天然跨 Document。系统不建设独立 Expert Worker，而由 Parent 统一管理关系。</p>
+
+    <h3>10.1　来源成果校验</h3>
+    <p>D1、D2 的 Document Worker Result 中的作者或发明人元数据产生候选 Expert ID X1，然后 <code>resolve_expert(X1, [D1, D2])</code> 返回 Expert Metadata 与身份、来源关系校验。<code>resolve_expert</code> <strong class="acc">必须显式接收 <code>expert_id</code> 和 <code>document_ids</code></strong>，这同时解决两个问题：防止只凭姓名或机构简介产生专家，以及强制 Parent 说明 Expert 从哪些已经检查的成果中发现。若来源 Document 尚未完成检查，工具返回 <code>requires_document_check</code>，不直接生成 Expert Profile。</p>
+
+    <h3>10.2　代表作检索</h3>
+    <p>专家资料解析只返回身份与元数据，不自动宣称哪些成果是「相关代表作」。Parent 使用专家范围检索 <code>search_documents(query, document_types, expert_scope="X1")</code>，返回的 D4、D5 仍是普通 Candidate Document，必须交给相同的 Document Worker 检查。Expert 相关性最终由三部分共同支撑：来源 Document 的相关性结果、Expert 身份与作者/发明人关系、代表作 Document 的相关性结果。</p>
+  </section>
+
+  <!-- ============ 11 完整运行案例 ============ -->
+  <section id="s11">
+    <h2>11　完整运行案例</h2>
+    <p>以下示例展示食品接触涂层需求如何从用户输入流转到成果与专家结果。</p>
+
+    <h3>11.1　用户输入与 Planner Phase</h3>
+    <blockquote>用户：我们需要一种能在高温环境工作的可降解包装涂层，最好适合食品接触。</blockquote>
+    <p>Parent 解析出约束 C1（高温环境下保持性能）、C2（可降解包装涂层）、C3（适合食品接触），生成 Q1/Q2/Q3 查询包，并调用 <code>initial_search(query_ids=["Q1","Q2","Q3"], document_types=["paper","patent"])</code>。Runtime 执行三路检索、合并、去重、统一 Reranker 和 max 聚合，返回 D1、D2、D3 与 Initial Chunk ID。</p>
+
+    <h3>11.2　Document Worker 并行检查</h3>
+    <p>Parent 调用 <code>check_documents(["D1","D2","D3"])</code>。Worker D1 首先读取摘要与结论，确认论文主题是 bio-based barrier coating；Initial Chunk 支持 C2，但没有充分说明 C1 与 C3，于是执行 <code>search_within_document</code>（query = "thermal stability after heating and food-contact migration or compliance"），搜索返回 C-D1-004 与 C-D1-009，Worker 用 <code>inspect_chunks</code> 读取原文后返回：</p>
+    <pre>{
+  "document_id": "D1",
+  "topic_match": "on_topic",
+  "coverage": {
+    "C1": {"status": "supported", "chunk_ids": ["C-D1-004"]},
+    "C2": {"status": "supported", "chunk_ids": ["C-D1-001"]},
+    "C3": {"status": "partial",   "chunk_ids": ["C-D1-009"]}
+  }
+}</pre>
+    <p>Worker D2 发现专利实施例同时支持 C1、C2、C3。Worker D3 通过 Abstract 与 Claims Summary 判断其核心是耐高温包装设备，而不是涂层材料，因此返回 <code>topic_match = off_topic</code>。</p>
+
+    <h3>11.3　Expert 发现与代表作检查</h3>
+    <p>D1 的作者和 D2 的发明人元数据指向同一个规范化 Expert ID X1。Parent 调用 <code>resolve_expert("X1", ["D1","D2"])</code>，工具确认 X1 的身份、机构及与 D1/D2 的作者或发明人关系。随后在专家范围内检索相关代表作 <code>search_documents(query="high-temperature biodegradable food packaging barrier coating", expert_scope="X1")</code>，返回 D4、D5，Parent 再次调用 <code>check_documents</code>。D4 获得 C1/C2/C3 的完整支持；D5 只讨论常温阻隔性能，被保留为部分相关但不进入最终强相关结果。</p>
+
+    <h3>11.4　停止与最终输出</h3>
+    <p>Parent 判断已经获得 3 篇强相关成果（D1、D2、D4）、1 名由来源成果和代表作共同支持的 Expert X1、每项核心约束对应的 Evidence Chunk ID，且没有未解决的关键身份冲突，因此调用 <code>finish</code>。最终输出由程序从 Evidence Store 加载对应原文，形成可追溯的证据链：</p>
+    <table class="def">
+      <caption><b>表 7</b>　案例最终输出的证据链</caption>
+      <thead>
+        <tr><th>结果</th><th>相关性</th><th>支持 / 来源</th><th>Evidence / 说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Document D1</td><td>高</td><td>C1、C2；C3 部分支持</td><td>C-D1-001、C-D1-004、C-D1-009</td></tr>
+        <tr><td>Document D2</td><td>高</td><td>C1、C2、C3</td><td>C-D2-002、C-D2-006、C-D2-011</td></tr>
+        <tr><td>Expert X1</td><td>—</td><td>来源成果 D1、D2；相关代表作 D4</td><td>身份关系：已校验</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ 12 Agent 组织方式实验 ============ -->
+  <section id="s12">
+    <h2>12　Agent 组织方式实验</h2>
+
+    <h3>12.1　对照方案</h3>
+    <p>三种方案使用相同 Query、候选 Document、模型、工具和总预算，只改变上下文与 Agent 的组织方式：A1 为单 Agent + 原始连续上下文；A2 为单 Agent + State → Markdown Prompt；A3 为连续 Parent + 并行 Document Worker。</p>
+
+    <h3>12.2　质量、效率与稳定性</h3>
+    <figure>
+      <div id="chart10" class="chart"></div>
+      <figcaption><b>图 10</b>　三种组织方式的质量对比（Document 任务成功、证据约束覆盖、Expert 成功、完整任务成功率）。A3 在四项质量指标上全面领先。</figcaption>
+    </figure>
+    <table>
+      <caption><b>表 8</b>　三种组织方式的效率与稳定性</caption>
+      <thead><tr><th>指标</th><th>A1 连续单 Agent</th><th>A2 State Prompt</th><th>A3 Parent+Worker</th></tr></thead>
+      <tbody>
+        <tr><td>Action Duplication Rate</td><td class="num">9.4%</td><td class="num">3.8%</td><td class="num">1.9%</td></tr>
+        <tr><td>平均输入 Token</td><td class="num">58k</td><td class="num">74k</td><td class="num">46k</td></tr>
+        <tr><td>Cache Hit Rate</td><td class="num">68%</td><td class="num">41%</td><td class="num">76%</td></tr>
+        <tr><td>P95 延迟</td><td class="num">31.6s</td><td class="num">34.8s</td><td class="num">23.9s</td></tr>
+        <tr><td>归一化单任务成本</td><td class="num">1.00×</td><td class="num">1.18×</td><td class="num">0.93×</td></tr>
+      </tbody>
+    </table>
+    <p class="key">A2 的结构化 State 显著降低重复动作并提高任务质量，但每轮重渲染动态 Prompt 增加输入 Token，并降低缓存命中率。A3 增加了 Worker 调用数，但每个 Worker 只保留单篇 Document 的短连续上下文，Parent 只接收 JSON 摘要，并行执行还降低了墙钟延迟。因此<strong class="acc">最终选择 A3</strong>，同时保留 Canonical State 作为 Runtime 控制平面。</p>
+
+    <h3>12.3　Agent 相对一次性结束的增益</h3>
+    <p>三路检索后直接结束的完整任务成功率为 0.72、证据覆盖 0.66、Expert 成功 0.49（3 次工具调用，P95 1.47s）；单 Parent 自适应执行提升到 0.82 / 0.79 / 0.68（8.4 次调用，31.6s）；Parent + Worker <strong class="acc">进一步到 0.88 / 0.87 / 0.81</strong>（10.7 次调用，23.9s）。Agent 的收益不是来自重新解释 Reranker 分数，而是来自三个可观察动作：对已召回的正确 Document 补齐缺失约束证据；排除局部 Chunk 相似但整篇主题偏离的 Document；沿作者或发明人关系发现并检查 Expert 的相关代表作。额外工具调用明显增加，因此简单需求允许 Parent 在三路结果后直接结束，只有当 Evidence Coverage、Expert 返回或结果数量不足时才进入多步执行。</p>
+  </section>
+
+  <!-- ============ 13 最终系统架构 ============ -->
+  <section id="s13">
+    <h2>13　最终系统架构</h2>
+    <figure>
+      <svg viewBox="0 0 760 360" style="width:100%;max-width:760px;margin:8px auto;display:block;font-size:12px" aria-label="最终系统架构">
+        <defs>
+          <marker id="m11" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#555"/>
+          </marker>
+        </defs>
+
+        <text x="160" y="35" text-anchor="end" font-size="11" fill="#777">输入</text>
+        <rect x="180" y="13" width="120" height="34" fill="#fff" stroke="#333"/>
+        <text x="240" y="35" text-anchor="middle" fill="#1a1a1a">Enterprise Query</text>
+        <line x1="240" y1="47" x2="240" y2="79" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+
+        <text x="160" y="105" text-anchor="end" font-size="11" fill="#777">Planner Phase（一次）</text>
+        <rect x="180" y="83" width="80" height="34" fill="#fff" stroke="#333"/>
+        <text x="220" y="105" text-anchor="middle" font-weight="700" fill="#1a1a1a">Parent</text>
+        <line x1="260" y1="100" x2="282" y2="100" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="282" y="83" width="80" height="34" fill="#fff" stroke="#333"/>
+        <text x="322" y="105" text-anchor="middle" fill="#1a1a1a">Q1 原文</text>
+        <rect x="372" y="83" width="80" height="34" fill="#fff" stroke="#333"/>
+        <text x="412" y="105" text-anchor="middle" fill="#1a1a1a">Q2 术语</text>
+        <rect x="462" y="83" width="80" height="34" fill="#fff" stroke="#333"/>
+        <text x="502" y="105" text-anchor="middle" fill="#1a1a1a">Q3 约束</text>
+
+        <path d="M322,117 L322,133" fill="none" stroke="#555" stroke-width="1.2"/>
+        <path d="M412,117 L412,133" fill="none" stroke="#555" stroke-width="1.2"/>
+        <path d="M502,117 L502,133" fill="none" stroke="#555" stroke-width="1.2"/>
+        <line x1="322" y1="133" x2="502" y2="133" stroke="#555" stroke-width="1.2"/>
+        <path d="M322,133 L240,133 L240,149" fill="none" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+
+        <text x="160" y="175" text-anchor="end" font-size="11" fill="#777">检索</text>
+        <rect x="180" y="153" width="120" height="34" fill="#fff" stroke="#333"/>
+        <text x="240" y="175" text-anchor="middle" fill="#1a1a1a">Hybrid Retrieval</text>
+        <line x1="300" y1="170" x2="322" y2="170" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="322" y="153" width="90" height="34" fill="#fff" stroke="#333"/>
+        <text x="367" y="175" text-anchor="middle" fill="#1a1a1a">Reranker</text>
+        <line x1="412" y1="170" x2="434" y2="170" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="434" y="153" width="90" height="34" fill="#fff" stroke="#333"/>
+        <text x="479" y="175" text-anchor="middle" fill="#1a1a1a">max 聚合</text>
+        <line x1="524" y1="170" x2="546" y2="170" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="546" y="153" width="160" height="34" fill="#fff" stroke="#333" stroke-width="1.5"/>
+        <text x="626" y="175" text-anchor="middle" font-weight="700" fill="#1a1a1a">候选 + Initial Chunks</text>
+
+        <path d="M626,187 L626,205 L220,205 L220,219" fill="none" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+
+        <text x="160" y="245" text-anchor="end" font-size="11" fill="#777">Controller Phase（持续）</text>
+        <rect x="180" y="223" width="80" height="34" fill="#fff" stroke="#333"/>
+        <text x="220" y="245" text-anchor="middle" font-weight="700" fill="#1a1a1a">Parent</text>
+        <line x1="260" y1="240" x2="282" y2="240" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="282" y="223" width="170" height="34" fill="#fff" stroke="#333"/>
+        <text x="367" y="245" text-anchor="middle" fill="#1a1a1a">Document Workers（并行）</text>
+        <line x1="452" y1="240" x2="474" y2="240" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="474" y="223" width="180" height="34" fill="#fff" stroke="#333" stroke-width="1.5"/>
+        <text x="564" y="245" text-anchor="middle" font-weight="700" fill="#1a1a1a">Coverage + Evidence IDs</text>
+
+        <path d="M564,257 L564,275 L290,275 L290,289" fill="none" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+
+        <text x="160" y="315" text-anchor="end" font-size="11" fill="#777">输出</text>
+        <rect x="180" y="293" width="220" height="34" fill="#fff" stroke="#333"/>
+        <text x="290" y="310" text-anchor="middle" fill="#1a1a1a">Expert Resolution +</text>
+        <text x="290" y="323" text-anchor="middle" fill="#1a1a1a">Expert-scoped Search</text>
+        <line x1="400" y1="310" x2="422" y2="310" stroke="#555" stroke-width="1.2" marker-end="url(#m11)"/>
+        <rect x="422" y="293" width="220" height="34" fill="#fff" stroke="#333" stroke-width="1.5"/>
+        <text x="532" y="315" text-anchor="middle" font-weight="700" fill="#1a1a1a">Document + Expert + Evidence</text>
+      </svg>
+      <figcaption><b>图 11</b>　最终系统架构。Runtime（State / Budget / Trace / Evidence Store）作为控制平面贯穿全程，不做语义判断。</figcaption>
+    </figure>
+
+    <h3>13.1　职责边界</h3>
+    <table class="def">
+      <caption><b>表 9</b>　各层职责边界</caption>
+      <thead><tr><th>层级</th><th>职责</th><th>不负责</th></tr></thead>
+      <tbody>
+        <tr><td>RAG</td><td>跨越表达差距，找到值得检查的候选</td><td>证明 Document 满足全部约束</td></tr>
+        <tr><td>Parent</td><td>需求解析、全局搜索、调度、Expert 聚合与停止</td><td>阅读所有 Chunk 全文</td></tr>
+        <tr><td>Document Worker</td><td>单篇 Document 的主题与 Coverage 检查</td><td>跨 Document 排序和最终决策</td></tr>
+        <tr><td>Runtime</td><td>ID、预算、去重、状态、Trace 与 Evidence Store</td><td>语义相关性判断</td></tr>
+      </tbody>
+    </table>
+
+    <h3>13.2　被删除的组件</h3>
+    <p><strong>在线独立 Verifier</strong> 被删除：Reranker 已提供 Query–Chunk 局部相关性排序，Document 的多约束核验由 Worker 完成，独立 Verifier 既不参与 RL 奖励，也没有证明能在两者之间提供独立在线收益。<strong>独立 Expert Worker</strong> 被删除：Expert 的关键是跨 Document 关系聚合，而非另一套全文阅读流程，代表作继续复用 Document Worker。<strong>每轮覆盖 Parent 的完整 State Prompt</strong> 被删除：Canonical State 保留给 Runtime 监控与恢复，Parent 使用连续会话，Worker 使用隔离的局部连续上下文。<strong>复杂 Document 聚合器</strong> 被删除：排除外部工作章节并进行专利家族去重后，F4 不是主要瓶颈，max 聚合最符合「至少存在一处强证据就值得检查」的候选目标。</p>
+
+    <h3>13.3　最终技术取舍</h3>
+    <table class="def">
+      <caption><b>表 10</b>　最终技术取舍</caption>
+      <thead><tr><th>组件</th><th>决策</th><th>依据</th></tr></thead>
+      <tbody>
+        <tr><td>Sparse + Dense + RRF</td><td>保留</td><td>具有稳定互补召回收益</td></tr>
+        <tr><td>通用 Reranker</td><td>保留</td><td>显著改善 nDCG，F3 不是主瓶颈</td></tr>
+        <tr><td>三路 Query</td><td>保留</td><td>Q2、Q3 均提供独占 Label 2 Document</td></tr>
+        <tr><td>Fine-tuned Dense</td><td>保留</td><td>修复 F2，并传递到 Document Recall</td></tr>
+        <tr><td>校准 Reranker 数据分流</td><td>仅离线使用</td><td>接近 Teacher 收益且成本更低</td></tr>
+        <tr><td>Parent + Document Worker</td><td>保留</td><td>质量、延迟、Token 和稳定性综合最优</td></tr>
+        <tr><td>Canonical State</td><td>控制平面保留</td><td>用于预算、审计、恢复，不反复覆盖 Prompt</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ============ 14 局限与风险 ============ -->
+  <section id="s14">
+    <h2>14　局限与风险</h2>
+
+    <h3>14.1　Pooled Recall 不是全语料绝对 Recall</h3>
+    <p>评测真值来自多个系统 Top-K 合并后的 judged pool。它比单系统标注公平，但仍可能遗漏所有系统都未发现的相关成果。因此报告始终使用 Pooled Recall，不宣称获得全语料绝对召回率。</p>
+
+    <h3>14.2　Query Planner 仍可能引入错误约束</h3>
+    <p>保留 Q1 可以避免扩展 Query 覆盖原始输入，但错误扩展仍会扩大候选池、增加成本，并可能影响统一 Reranker 的截断。生产环境需要记录约束保留率、虚构约束率和每条扩展的独占相关成果。</p>
+
+    <h3>14.3　专利语料仍然更难</h3>
+    <p>专利的实施例、可选材料列表、家族版本和发明人元数据会增加解析与聚合错误。本文只判断技术相关性，不处理法律有效性、保护范围或商业价值。</p>
+
+    <h3>14.4　Agent 判断不是人工专家结论</h3>
+    <p>Worker Coverage 只是基于原文证据的任务匹配判断。模型可能误解实验条件、否定表达或限定范围。高风险输出需要保留原文、页码和章节，供人工复核。</p>
+
+    <h3>14.5　Worker 并行并不必然更便宜</h3>
+    <p>并行 Worker 会增加模型调用数，其成本优势依赖候选数量、单文档长度、缓存机制和并发配置。如果文档很短或候选很少，单 Agent 可能更简单。系统应保留按任务复杂度回退的能力。</p>
+  </section>
+
+  <!-- ============ 15 结论 ============ -->
+  <section id="s15">
+    <h2>15　结论</h2>
+    <p>本项目的核心不是把 RAG、Reranker、微调、Verifier 和多 Agent 同时放进一张架构图，而是建立一条可以被实验解释的技术决策链。</p>
+    <p>首先，混合召回和通用 Reranker 构成最小基线。表达敏感性实验说明企业语言与科研语言之间存在可恢复差距，因此系统保留原始 Query，并增加术语与约束两条并行扩展。其次，失败归因将主要瓶颈定位在 Chunk Recall，而不是 Reranker 或 Document 聚合，因此只微调 Dense Retriever。训练阶段通过 Query–Chunk 审计发现高排名非 Anchor 中存在大量不安全负例，最终使用校准 Reranker 完成 pseudo-positive、mask 和 hard negative 分流。</p>
+    <p>当检索已经稳定找到候选后，问题转为跨 Chunk 约束核验、证据补全和跨 Document 专家聚合。最终架构让连续 Parent 负责全局决策，让并行 Document Worker 隔离原文检查，让 Runtime 负责确定性的状态、预算和证据管理。系统输出的不只是一个相关性分数，而是 Document、Expert 与可追溯 Evidence 组成的证据链。这一设计保留了足够的技术深度，但<strong class="acc">每个复杂组件都对应一个明确失败来源和可测量收益</strong>；没有独立收益的组件均被删除，从而使最终方案更接近可验证、可维护的生产系统。</p>
+  </section>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script>
+(function(){
+  if (typeof echarts === 'undefined') { return; }
+  // 灰度 + 单一深色强调
+  const G = { g0:'#e3e3e3', g1:'#c7c7c7', g2:'#a3a3a3', g3:'#7a7a7a', g4:'#555555', key:'#111111' };
+  const SERIF = '"Noto Serif SC","Songti SC","SimSun",Georgia,serif';
+
+  function axis(){
+    return {
+      axisLine:{lineStyle:{color:'#999'}},
+      axisTick:{show:false},
+      axisLabel:{color:'#555', fontSize:11.5, fontFamily:SERIF},
+      splitLine:{lineStyle:{color:'#efefef'}}
+    };
+  }
+  function bars(series, cat){
+    return {
+      color:series.map(s=>s.color),
+      tooltip:{trigger:'axis', axisPointer:{type:'shadow'}, valueFormatter:(v)=> v==null ? '-' : String(v)},
+      legend:{top:0, textStyle:{color:'#555', fontSize:12, fontFamily:SERIF}, itemWidth:16, itemHeight:10},
+      grid:{left:46, right:20, top:36, bottom:34},
+      xAxis:Object.assign({type:'category', data:cat}, axis()),
+      yAxis:Object.assign({type:'value', min:0, max:1}, axis()),
+      series:series.map(s=>({
+        name:s.name, type:'bar', data:s.data, barMaxWidth:30,
+        itemStyle:{color:s.color},
+        label:s.label?{show:true, position:'top', color:s.color, fontSize:12, fontWeight:'bold'}:undefined
+      }))
+    };
+  }
+
+  const charts = {};
+  function mount(id){
+    const el = document.getElementById(id);
+    if(el) charts[id] = echarts.init(el);
+  }
+
+  // 图2 基线消融
+  mount('chart2');
+  if(charts.chart2){
+    const o = bars([
+      {name:'Pooled Recall@5', color:G.key, data:[0.54,0.61,0.68,0.72], label:true},
+      {name:'nDCG@10', color:G.g2, data:[0.49,0.55,0.61,0.69], label:true}
+    ], ['R0 Sparse','R1 Dense','R2 +RRF','R3 +Reranker']);
+    o.series.push({
+      name:'P95 延迟(s)', type:'line', yAxisIndex:1, data:[0.34,0.46,0.65,0.98],
+      symbol:'circle', symbolSize:6, lineStyle:{color:G.g4, width:1.5, type:'dashed'}, itemStyle:{color:G.g4}
+    });
+    o.yAxis = [
+      Object.assign({type:'value', min:0, max:1}, axis()),
+      Object.assign({type:'value', min:0, max:1.2, splitLine:{show:false}, axisLabel:{color:G.g4, fontSize:10.5, fontFamily:SERIF}, axisLine:{lineStyle:{color:'#999'}}, axisTick:{show:false}})
+    ];
+    o.grid = {left:46, right:46, top:36, bottom:34};
+    o.legend = {top:0, data:['Pooled Recall@5','nDCG@10','P95 延迟(s)'], textStyle:{color:'#555', fontSize:12, fontFamily:SERIF}};
+    o.tooltip = {trigger:'axis', axisPointer:{type:'cross'}};
+    charts.chart2.setOption(o);
+  }
+
+  // 图3 表达敏感性
+  mount('chart3');
+  if(charts.chart3){
+    const o = bars([
+      {name:'R0 Sparse', color:G.g0, data:[0.66,0.54,0.45]},
+      {name:'R1 Dense', color:G.g1, data:[0.71,0.61,0.55]},
+      {name:'R2 +RRF', color:G.g2, data:[0.77,0.68,0.60]},
+      {name:'R3 +Reranker', color:G.key, data:[0.81,0.72,0.64], label:true}
+    ], ['术语对齐','企业自然','口语隐式']);
+    charts.chart3.setOption(o);
+  }
+
+  // 图4 三路递增
+  mount('chart4');
+  if(charts.chart4){
+    const o = bars([
+      {name:'Pooled Recall@5', color:G.key, data:[0.72,0.80,0.85,0.88], label:true}
+    ], ['P0 1路','P2 2路','P3 3路','Oracle 上界']);
+    o.series.push({
+      name:'nDCG@10', type:'line', data:[0.69,0.75,0.79,0.82],
+      symbol:'circle', symbolSize:6, lineStyle:{color:G.g4, width:1.5, type:'dashed'}, itemStyle:{color:G.g4},
+      label:{show:true, position:'bottom', distance:6, color:G.g4, fontSize:10.5, textBorderColor:'#fff', textBorderWidth:3}
+    });
+    o.legend = {top:0, data:['Pooled Recall@5','nDCG@10'], textStyle:{color:'#555', fontSize:12, fontFamily:SERIF}};
+    charts.chart4.setOption(o);
+  }
+
+  // 图5 失败分布（100% 堆叠横向）
+  mount('chart5');
+  if(charts.chart5){
+    const rows = {
+      'F0 语料/元数据':[5,7], 'F1 解析/章节':[8,12], 'F2 Chunk 召回':[42,38],
+      'F3 Chunk 重排':[14,10], 'F4 聚合/去重':[9,15], 'F5 证据覆盖':[22,18]
+    };
+    const names = Object.keys(rows);
+    const pal = {'F0 语料/元数据':G.g0, 'F1 解析/章节':G.g1, 'F2 Chunk 召回':G.key, 'F3 Chunk 重排':G.g2, 'F4 聚合/去重':G.g3, 'F5 证据覆盖':G.g4};
+    charts.chart5.setOption({
+      color:names.map(n=>pal[n]),
+      tooltip:{trigger:'axis', axisPointer:{type:'shadow'}, valueFormatter:(v)=> v+'%'},
+      legend:{top:0, textStyle:{color:'#555', fontSize:11, fontFamily:SERIF}, itemWidth:14, itemHeight:10},
+      grid:{left:46, right:46, top:40, bottom:30},
+      xAxis:{type:'value', max:100, axisLabel:{formatter:'{value}%', color:'#555', fontSize:11}, splitLine:{lineStyle:{color:'#efefef'}}},
+      yAxis:{type:'category', data:['Paper','Patent'], axisLine:{lineStyle:{color:'#999'}}, axisTick:{show:false}, axisLabel:{color:'#1a1a1a', fontSize:12, fontFamily:SERIF}},
+      series:names.map(n=>({
+        name:n.replace(/^F\d+\s*/,''), type:'bar', stack:'total', data:rows[n],
+        itemStyle:{color:pal[n]},
+        barMaxWidth:24,
+        label:{show:true, position:'inside', color: n.indexOf('F2')===0 ? '#fff' : '#1a1a1a', fontSize:10, formatter:(p)=> p.value>6 ? p.value+'%' : ''}
+      }))
+    });
+  }
+
+  // 图6 负例策略（散点 + 气泡成本）
+  mount('chart6');
+  if(charts.chart6){
+    const d = [
+      {n:'N0 Naive', x:43.0, y:0.84, cost:1.00, c:G.g3},
+      {n:'N1 校准 Reranker', x:9.1, y:0.89, cost:1.08, c:G.key},
+      {n:'N2 Teacher', x:6.3, y:0.90, cost:1.46, c:G.g3},
+      {n:'N3 人工分流', x:2.1, y:0.91, cost:6.80, c:G.g1}
+    ];
+    charts.chart6.setOption({
+      tooltip:{trigger:'item', formatter:(p)=>{
+        const v = p.value;
+        return p.name + '<br>错误标负率：' + v[0] + '%<br>Pooled Recall@5：' + v[1] + '<br>相对成本：' + v[2] + '×';
+      }},
+      grid:{left:54, right:30, top:30, bottom:46},
+      xAxis:Object.assign({type:'value', name:'错误标负率 %（越低越好）', nameLocation:'middle', nameGap:28, min:0, max:50, nameTextStyle:{color:'#555', fontSize:11, fontFamily:SERIF}}, axis()),
+      yAxis:Object.assign({type:'value', min:0.82, max:0.93, axisLabel:{formatter:(v)=>v.toFixed(2), color:'#555', fontSize:11, fontFamily:SERIF}}, axis()),
+      series:[{
+        type:'scatter', data:d.map(p=>({name:p.n, value:[p.x, p.y, p.cost], itemStyle:{color:p.c, borderColor:'#fff', borderWidth:1}})),
+        symbolSize:(v)=> Math.round(14 + Math.sqrt(v[2])*22),
+        label:{show:true, position:'top', formatter:(p)=>p.name, color:'#1a1a1a', fontSize:12, fontFamily:SERIF},
+        emphasis:{scale:1.15}
+      }]
+    });
+  }
+
+  // 图7 微调前后
+  mount('chart7');
+  if(charts.chart7){
+    const o = bars([
+      {name:'通用 Dense', color:G.g2, data:[0.78,0.85,0.79]},
+      {name:'微调 Dense', color:G.key, data:[0.86,0.89,0.83], label:true}
+    ], ['Chunk Recall@100','Pooled Recall@5','nDCG@10']);
+    charts.chart7.setOption(o);
+  }
+
+  // 图8 RAG 边界
+  mount('chart8');
+  if(charts.chart8){
+    const items = [
+      {n:'候选文档召回@10', v:0.94, c:G.g3},
+      {n:'Pooled Recall@5', v:0.89, c:G.g3},
+      {n:'Chunk Recall@100', v:0.86, c:G.g3},
+      {n:'初始证据核心约束覆盖', v:0.66, c:G.key}
+    ];
+    charts.chart8.setOption({
+      tooltip:{trigger:'axis', axisPointer:{type:'shadow'}, valueFormatter:(v)=>v.toFixed(2)},
+      grid:{left:150, right:56, top:16, bottom:28},
+      xAxis:{type:'value', min:0, max:1, axisLabel:{color:'#555', fontSize:11}, splitLine:{lineStyle:{color:'#efefef'}}},
+      yAxis:{type:'category', data:items.map(i=>i.n), axisLine:{lineStyle:{color:'#999'}}, axisTick:{show:false}, axisLabel:{color:'#1a1a1a', fontSize:12, fontFamily:SERIF}},
+      series:[{
+        type:'bar', data:items.map(i=>({value:i.v, itemStyle:{color:i.c}})),
+        barMaxWidth:22, label:{show:true, position:'right', color:'#1a1a1a', fontSize:12, formatter:(p)=>p.value.toFixed(2)}
+      }]
+    });
+  }
+
+  // 图10 组织方式质量
+  mount('chart10');
+  if(charts.chart10){
+    const o = bars([
+      {name:'A1 单 Agent', color:G.g1, data:[0.74,0.70,0.61,0.71]},
+      {name:'A2 State', color:G.g2, data:[0.81,0.80,0.70,0.78]},
+      {name:'A3 Parent+Worker', color:G.key, data:[0.88,0.87,0.81,0.86], label:true}
+    ], ['Document 任务成功','证据约束覆盖','Expert 成功','完整任务成功率']);
+    charts.chart10.setOption(o);
+  }
+
+  window.addEventListener('resize', ()=>{
+    Object.values(charts).forEach(c=> c && c.resize());
+  });
+})();
+</script>
+<script>
+(function(){
+  if (!('IntersectionObserver' in window)) return;
+  var links = Array.prototype.slice.call(document.querySelectorAll('.toc a'));
+  var byId = {};
+  links.forEach(function(a){ byId[a.getAttribute('href').slice(1)] = a; });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (!e.isIntersecting) return;
+      links.forEach(function(a){ a.classList.remove('active'); });
+      var m = byId[e.target.id];
+      if (m) m.classList.add('active');
+    });
+  }, {rootMargin:'-15% 0px -75% 0px', threshold:0});
+  document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+})();
+</script>
+<script>
+(function(){
+  var es = document.querySelectorAll('pre');
+  for (var i = 0; i < es.length; i++){
+    var src = es[i].textContent;
+    var html = src.replace(/("(?:[^"\\]|\\.)*")(\s*:)?|(-?\d+\.?\d*)|(\btrue\b|\bfalse\b|\bnull\b)|([{}\[\],:])/g, function(m, str, colon, num, bool, punc){
+      if (str) {
+        if (colon) return '<span class="tk-k">' + str + colon + '</span>';
+        return '<span class="tk-s">' + str + '</span>';
+      }
+      if (num) return '<span class="tk-n">' + num + '</span>';
+      if (bool) return '<span class="tk-n">' + bool + '</span>';
+      if (punc) return '<span class="tk-p">' + punc + '</span>';
+      return m;
+    });
+    es[i].innerHTML = html;
+  }
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<script>
+(function(){
+  if (typeof renderMathInElement === 'undefined') return;
+  document.addEventListener('DOMContentLoaded', function(){
+    renderMathInElement(document.body, {
+      delimiters: [{left: '$$', right: '$$', display: true}],
+      throwOnError: false
+    });
+  });
+})();
+</script>
+</body>
+</html>

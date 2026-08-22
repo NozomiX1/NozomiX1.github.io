@@ -1,0 +1,85 @@
+/* ============================================================
+   极简个人主页 · 设计系统
+   提炼自 report/index.html 的简约风格：
+   —— 衬线字体 + 黑白灰墨色 + 留白
+   ============================================================ */
+
+:root{
+  --ink:#1a1a1a; --body:#262626; --muted:#555; --faint:#777; --rule:#111;
+  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun","Times New Roman",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+
+body{
+  margin:0; background:#fff; color:var(--body); font-family:var(--serif);
+  line-height:1.95; font-size:16.5px; -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:960px; margin:0 auto; padding:0 26px}
+
+a{color:var(--ink); text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* ---------------- 标题块 ---------------- */
+.titleblock{text-align:center; padding:72px 0 20px}
+.titleblock h1{font-size:2.05em; line-height:1.35; margin:.35em 0 .25em; font-weight:700; color:var(--ink); letter-spacing:.01em}
+.titleblock .sub{font-size:1.12em; color:#3a3a3a; font-weight:400}
+
+/* 导航：居中、纯文字、留白分隔 */
+.nav{margin:14px 0 0; text-align:center; font-size:.9em}
+.nav a{margin:0 14px; color:var(--muted)}
+.nav a:hover{color:var(--ink)}
+.nav a.active{color:var(--ink); font-weight:700}
+
+/* ---------------- 关于 ---------------- */
+.abstract{margin:8px auto 0}
+.abstract .lbl{text-align:center; font-weight:700; color:var(--ink); margin:6px 0 12px}
+.abstract p{text-indent:2em; text-align:justify; margin:0 0 12px}
+.abstract .keywords{text-indent:0; margin-top:14px}
+.abstract .keywords b{font-weight:700}
+
+/* ---------------- 项目列表 ---------------- */
+.projectlist{margin:30px auto 6px}
+.projectlist .lbl{text-align:center; font-weight:700; margin-bottom:16px}
+.project{padding:20px 0; border-bottom:1px solid #eee}
+.project:last-child{border-bottom:none}
+.project .p-head{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:6px}
+.project .p-name{font-size:1.12em; margin:0; font-weight:700; color:var(--ink)}
+.project .p-name a{color:var(--ink)}
+.project .p-links{font-family:var(--mono); font-size:12px; color:var(--faint)}
+.project .p-links a{color:var(--muted); margin-left:12px}
+.project .p-links a:hover{color:var(--ink)}
+.project .p-desc{margin:6px 0 8px; text-align:left; color:var(--body)}
+.project .p-tags{font-family:var(--mono); font-size:11.5px; color:var(--faint)}
+
+/* ---------------- 仓库列表 ---------------- */
+.repolist{margin:30px auto 6px}
+.repolist .lbl{text-align:center; font-weight:700; margin-bottom:16px}
+.repo{padding:18px 0; border-bottom:1px solid #eee}
+.repo:last-child{border-bottom:none}
+.repo .r-head{display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:6px}
+.repo .r-name{font-family:var(--mono); font-size:17px; font-weight:700; color:var(--ink); margin:0}
+.repo .r-name a{color:var(--ink)}
+.repo .r-links{font-family:var(--mono); font-size:12px; color:var(--faint)}
+.repo .r-links a{color:var(--muted); margin-left:12px}
+.repo .r-links a:hover{color:var(--ink)}
+.repo .r-desc{margin:6px 0 8px; text-align:left; color:var(--body)}
+.repo .r-meta{font-family:var(--mono); font-size:11.5px; color:var(--faint)}
+
+/* ---------------- 页脚 ---------------- */
+.footer{margin:60px 0 40px; padding-top:16px; border-top:1.5px solid var(--rule); font-size:.82em; color:var(--faint); text-align:center}
+.footer a{color:var(--faint)}
+.footer a:hover{color:var(--ink)}
+
+/* ---------------- 响应式 ---------------- */
+@media (max-width:760px){
+  .titleblock{padding:52px 0 16px}
+}
+
+@media print{
+  body{color:#000}
+  a{color:#000}
+}
