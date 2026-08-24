@@ -61,7 +61,6 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 }
 .report-link:hover{background:var(--accent);color:var(--paper);text-decoration:none}
 .report-link:active{transform:translateY(1px)}
-.report-link span[aria-hidden="true"]{font-family:var(--mono)}
 .project-actions{display:flex;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;gap:8px}
 .report-link.secondary{background:transparent;color:var(--ink)}
 .report-link.secondary:hover{background:var(--surface);color:var(--accent)}
