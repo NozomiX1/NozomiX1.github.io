@@ -3,156 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Xi Feng · 个人主页</title>
-<meta name="description" content="Xi Feng 的个人主页：项目、GitHub 仓库与联系方式。">
+<title>Xi Feng · AI Agent 工程方向</title>
+<meta name="description" content="Xi Feng 的 AI Agent 技术作品集，关注可评估、可验证的智能体系统与真实工作流。">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="wrap">
-
-  <!-- 标题块：改成你的名字和一句话简介 -->
+<div class="wrap" id="top">
   <header class="titleblock">
     <h1>Xi Feng</h1>
-    <div class="sub">Agent 工程师 · 构建可评估、可落地的智能体系统</div>
-    <nav class="nav">
+    <div class="sub">AI Agent 工程方向 · 构建可评估、可验证的智能体系统</div>
+    <nav class="nav" aria-label="主导航">
       <a href="index.html" class="active">首页</a>
       <a href="index.html#projects">项目</a>
       <a href="index.html#repos">仓库</a>
+      <a href="mailto:fengxi@ustc.edu">邮箱</a>
       <a href="https://github.com/NozomiX1" target="_blank" rel="noopener">GitHub</a>
     </nav>
   </header>
 
-  <!-- 关于：两三句就够了 -->
-  <div class="abstract">
-    <div class="lbl">关　于</div>
-    <p>你好，我是 Xi Feng。我的方向是 AI Agent：检索增强（RAG）、多智能体协作，以及让 Agent 真正可用——可追溯、可评估、有证据链。</p>
-    <p>这里陈列我做过的项目，以及托管在 GitHub 上的仓库。如果有合适的机会，欢迎通过 GitHub 联系我。</p>
-    <p class="keywords"><b>关键词：</b>AI Agent · Agentic RAG · 多智能体 · 检索系统 · 评测</p>
-  </div>
-
-  <!-- 项目列表：作品 / 成果。每个项目 = 名称 + 一句话 + 技术栈 + 链接 -->
-  <div class="projectlist" id="projects">
-    <div class="lbl">项　目</div>
-
-    <article class="project">
-      <div class="p-head">
-        <h3 class="p-name"><a href="科研成果与专家检索%20Agent.html">科研成果与专家检索 Agent</a></h3>
-        <span class="p-links"><a href="科研成果与专家检索%20Agent.html">技术报告</a></span>
+  <main>
+    <section class="abstract" aria-labelledby="about-title">
+      <h2 class="lbl" id="about-title">关于</h2>
+      <p class="intro">你好，我是 Xi Feng。我希望从事 AI Agent 与大模型应用相关工作，关注如何将模型能力组织成可运行、可评估、可验证的智能体系统。</p>
+      <p>下面的项目记录了我如何从实际问题出发，通过实验定位瓶颈、设计系统边界，并将 Agent 接入知识发现、内容审计和真实工具环境。</p>
+      <div class="current-focus" aria-label="当前关注方向">
+        <strong>现在关注</strong>
+        <span>Agent Systems</span>
+        <span>Agent Evaluation</span>
+        <span>Tool-use &amp; Workflow</span>
       </div>
-      <p class="p-desc">从领域检索失败诊断到文档级 Agent 执行：混合召回论文与专利，沿作者/发明人关系发现专家，返回可追溯到原文的证据链。</p>
-      <div class="p-tags">信息检索 · Dense Retrieval · Agentic RAG · 证据追踪</div>
-    </article>
+    </section>
 
-    <article class="project">
-      <div class="p-head">
-        <h3 class="p-name"><a href="技术报告_游戏教程质量审计Agent.html">游戏教程质量审计 Agent</a></h3>
-        <span class="p-links"><a href="技术报告_游戏教程质量审计Agent.html">技术报告</a></span>
+    <section class="projectlist" id="projects" aria-labelledby="projects-title">
+      <div class="section-head">
+        <h2 class="lbl" id="projects-title">重点项目</h2>
+        <p>两个面向真实工作流的端到端 Agent 系统。点击技术报告可查看架构、实验和技术取舍。</p>
       </div>
-      <p class="p-desc">从真实编辑器验证到可校准的教学质量评价：用 LLM Agent 自动审计游戏教程文档质量，输出带证据链的增量审计结果。</p>
-      <div class="p-tags">LLM Agent · 游戏研发 · 自动化测试 · 教学评价</div>
-    </article>
 
-    <article class="project">
-      <div class="p-head">
-        <h3 class="p-name"><a href="https://cii-bench.github.io/" target="_blank" rel="noopener">CII-Bench：中文图像寓意理解评测基准</a></h3>
-        <span class="p-links"><a href="https://arxiv.org/abs/2410.13854" target="_blank" rel="noopener">arXiv</a><a href="https://cii-bench.github.io/" target="_blank" rel="noopener">Project</a></span>
+      <article class="featured-project">
+        <div class="project-topline">
+          <div>
+            <p class="project-type">Enterprise Knowledge Discovery</p>
+            <h3 class="p-name"><a href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">科研成果与专家检索 Agent</a></h3>
+          </div>
+          <a class="report-link" href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="p-brief">面向论文与专利的知识发现系统。从自然语言需求出发，完成混合检索、多约束核验、专家发现与证据链组装。</p>
+        <dl class="proof-grid" aria-label="项目结果">
+          <div><dt>0.88</dt><dd>完整任务成功率</dd></div>
+          <div><dt>0.87</dt><dd>证据覆盖</dd></div>
+          <div><dt>0.81</dt><dd>专家发现成功率</dd></div>
+        </dl>
+        <div class="project-detail-grid">
+          <div>
+            <h4>系统设计</h4>
+            <p>混合召回与三路 Query 找到候选，连续 Parent 负责全局决策，并行 Document Worker 隔离长文档核验，Runtime 管理状态、预算和证据。</p>
+          </div>
+          <div>
+            <h4>独立完成</h4>
+            <p>项目由我独立完成，包括需求分析、实验设计、检索与 Agent 架构、核心实现、评测和技术报告。通过失败归因定位 Chunk Recall 主瓶颈，并用消融实验删除没有独立收益的组件。</p>
+          </div>
+        </div>
+        <div class="tech-stack" aria-label="技术栈">
+          <strong>Stack</strong>
+          <span>Sparse + Dense Retrieval</span>
+          <span>Reranker</span>
+          <span>Parent + Worker</span>
+          <span>Evidence Store</span>
+        </div>
+      </article>
+
+      <article class="featured-project">
+        <div class="project-topline">
+          <div>
+            <p class="project-type">Game Content Quality Assurance</p>
+            <h3 class="p-name"><a href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">游戏教程质量审计 Agent</a></h3>
+          </div>
+          <a class="report-link" href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
+        </div>
+        <p class="p-brief">面向游戏开发教程的持续质量审计系统。结合 LLM 扫描、独立核验与真实编辑器运行证据，检查事实可靠性和教学有效性。</p>
+        <dl class="proof-grid" aria-label="项目结果">
+          <div><dt>18/18</dt><dd>已知主题覆盖</dd></div>
+          <div><dt>5/5</dt><dd>人为缺陷命中</dd></div>
+          <div><dt>26/26</dt><dd>候选核验闭环</dd></div>
+        </dl>
+        <div class="project-detail-grid">
+          <div>
+            <h4>系统设计</h4>
+            <p>客观路线验证代码、API 与运行时主张，主观路线检查概念引入和学习迁移。两条路线独立扫描、独立核验，在结果层交换证据。</p>
+          </div>
+          <div>
+            <h4>独立完成</h4>
+            <p>项目由我独立完成，包括审计目标建模、主客观评测协议、编辑器自动化、Agent 实现、实验和技术报告。接入真实游戏编辑器建立可执行证据，并完成多模型对照与增量审计验证。</p>
+          </div>
+        </div>
+        <div class="tech-stack" aria-label="技术栈">
+          <strong>Stack</strong>
+          <span>LLM Agent</span>
+          <span>Editor Automation</span>
+          <span>Paired Evaluation</span>
+          <span>Evidence-grounded QA</span>
+        </div>
+      </article>
+
+      <article class="featured-project paper-project">
+        <div class="project-topline">
+          <div>
+            <p class="project-type">Multimodal Benchmark Research</p>
+            <h3 class="p-name"><a href="https://cii-bench.github.io/" target="_blank" rel="noopener">CII-Bench：中文图像寓意理解评测基准</a></h3>
+          </div>
+          <div class="project-actions">
+            <a class="report-link secondary" href="https://cii-bench.github.io/" target="_blank" rel="noopener">项目主页 <span aria-hidden="true">↗</span></a>
+            <a class="report-link" href="https://arxiv.org/abs/2410.13854" target="_blank" rel="noopener">阅读论文 <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+
+        <p class="p-brief">面向中文图像高阶寓意理解的多模态评测基准。图像来自中文互联网并经过人工审核，同时覆盖中国传统文化内容，用于检验模型对高层语义和文化知识的理解。</p>
+
+        <dl class="proof-grid" aria-label="论文结果">
+          <div><dt>64.4%</dt><dd>MLLM 最高准确率</dd></div>
+          <div><dt>78.2%</dt><dd>人类平均准确率</dd></div>
+          <div><dt>81.0%</dt><dd>人类最高准确率</dd></div>
+        </dl>
+
+        <div class="project-detail-grid">
+          <div>
+            <h4>项目成果</h4>
+            <p>构建并公开 CII-Bench，系统评测多个多模态大模型。实验揭示模型与人类之间的明显差距，以及模型在中国传统文化图像理解上的不足。</p>
+          </div>
+          <div>
+            <h4>我的贡献</h4>
+            <p>作为项目负责人之一，推进方案设计、数据构建、实验、论文撰写与公开发布的完整流程，并负责改进数据标注方法。</p>
+          </div>
+        </div>
+
+        <div class="tech-stack" aria-label="研究关键词">
+          <strong>Research</strong>
+          <span>Multimodal Benchmark</span>
+          <span>Data Annotation</span>
+          <span>Model Evaluation</span>
+          <span>Chinese Visual Culture</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="repolist" id="repos" aria-labelledby="repos-title">
+      <div class="section-head compact">
+        <h2 class="lbl" id="repos-title">其他项目与仓库</h2>
+        <p>工具、源码研究与个人实验。完整列表可在 GitHub 查看。</p>
       </div>
-      <p class="p-desc">评估多模态大模型对中文视觉内容的高阶感知与理解能力，图像来自中文互联网并人工复核；MLLM 最高准确率 64.4%，仍显著低于人类 78.2%。</p>
-      <div class="p-tags">Multimodal · Benchmark · 中文图像 · 传统文化</div>
-    </article>
-  </div>
 
-  <!-- 仓库列表：GitHub repositories。每个仓库 = 仓库名 + 一句话 + 语言 + 链接 -->
-  <div class="repolist" id="repos">
-    <div class="lbl">仓　库</div>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/augur">augur</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/augur">GitHub</a></span>
+      <div class="repo-grid">
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/augur" target="_blank" rel="noopener">augur</a></h3><a class="r-link" href="https://github.com/NozomiX1/augur" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">macOS 上的 LLM 增强中文拼音输入法。</p>
+          <div class="r-meta"><span>Swift</span><span>LLM</span><span>输入法</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/claude-code-wiki" target="_blank" rel="noopener">claude-code-wiki</a></h3><a class="r-link" href="https://github.com/NozomiX1/claude-code-wiki" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">Claude Code 源码分析百科全书，173 页源码路径映射。</p>
+          <div class="r-meta"><span>TypeScript</span><span>源码分析</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/claude-code-fresh" target="_blank" rel="noopener">claude-code-fresh</a></h3><a class="r-link" href="https://github.com/NozomiX1/claude-code-fresh" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">Claude Code 插件更新检查、自动应用与通知。</p>
+          <div class="r-meta"><span>Shell</span><span>Claude Code</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/wheres-my-job" target="_blank" rel="noopener">wheres-my-job</a></h3><a class="r-link" href="https://github.com/NozomiX1/wheres-my-job" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">2026 秋招 LLM / Agent 岗位自动抓取、逐岗读判与筛选。</p>
+          <div class="r-meta"><span>HTML</span><span>LLM</span><span>求职</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/Mairo" target="_blank" rel="noopener">Mairo</a></h3><a class="r-link" href="https://github.com/NozomiX1/Mairo" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">国产模型生成马里奥游戏的对比仓库。</p>
+          <div class="r-meta"><span>JavaScript</span><span>LLM</span><span>游戏生成</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/dandao" target="_blank" rel="noopener">dandao</a></h3><a class="r-link" href="https://github.com/NozomiX1/dandao" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">像素风修仙炼丹游戏，基于 Godot 4.6。</p>
+          <div class="r-meta"><span>GDScript</span><span>Godot</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/Gala" target="_blank" rel="noopener">Gala</a></h3><a class="r-link" href="https://github.com/NozomiX1/Gala" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">macOS 上的 galgame 播放器。</p>
+          <div class="r-meta"><span>Swift</span><span>macOS</span></div>
+        </article>
+        <article class="repo">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/oh-my-resume" target="_blank" rel="noopener">oh-my-resume</a></h3><a class="r-link" href="https://github.com/NozomiX1/oh-my-resume" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">将 Markdown 简历生成为可投递的 PDF。</p>
+          <div class="r-meta"><span>JavaScript</span><span>工具</span></div>
+        </article>
+        <article class="repo repo-wide">
+          <div class="r-head"><h3 class="r-name"><a href="https://github.com/NozomiX1/AICS" target="_blank" rel="noopener">AICS</a></h3><a class="r-link" href="https://github.com/NozomiX1/AICS" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></div>
+          <p class="r-desc">中科大 2023 春「智能计算系统」课程实验与作业。</p>
+          <div class="r-meta"><span>Python</span><span>课程实验</span></div>
+        </article>
       </div>
-      <p class="r-desc">知言 Augur——macOS 上的 LLM 增强中文拼音输入法。</p>
-      <div class="r-meta">Swift · LLM · 输入法</div>
-    </article>
+    </section>
+  </main>
 
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/claude-code-wiki">claude-code-wiki</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/claude-code-wiki">GitHub</a></span>
-      </div>
-      <p class="r-desc">Claude Code 源码分析百科全书：173 页，src/path:line 源码路径映射。</p>
-      <div class="r-meta">TypeScript · 源码分析</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/claude-code-fresh">claude-code-fresh</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/claude-code-fresh">GitHub</a></span>
-      </div>
-      <p class="r-desc">Claude Code 自动更新插件：检查插件更新、自动应用并通知。</p>
-      <div class="r-meta">Shell · Claude Code</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/wheres-my-job">wheres-my-job</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/wheres-my-job">GitHub</a></span>
-      </div>
-      <p class="r-desc">2026 秋招 LLM/Agent 岗位筛选：自动抓取 + 逐岗读判，输出可排序网页。</p>
-      <div class="r-meta">HTML · LLM · 求职</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/Mairo">Mairo</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/Mairo">GitHub</a></span>
-      </div>
-      <p class="r-desc">国产模型生成马里奥游戏的对比仓库。</p>
-      <div class="r-meta">JavaScript · LLM · 游戏生成</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/dandao">dandao</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/dandao">GitHub</a></span>
-      </div>
-      <p class="r-desc">灵山药庄——像素风修仙炼丹游戏（Godot 4.6）。</p>
-      <div class="r-meta">GDScript · Godot</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/Gala">Gala</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/Gala">GitHub</a></span>
-      </div>
-      <p class="r-desc">Gala——macOS 上的 galgame 播放器。</p>
-      <div class="r-meta">Swift · macOS</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/oh-my-resume">oh-my-resume</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/oh-my-resume">GitHub</a></span>
-      </div>
-      <p class="r-desc">Markdown 简历 PDF 生成器，写 Markdown 即可生成简历。</p>
-      <div class="r-meta">JavaScript · 工具</div>
-    </article>
-
-    <article class="repo">
-      <div class="r-head">
-        <h3 class="r-name"><a href="https://github.com/NozomiX1/AICS">AICS</a></h3>
-        <span class="r-links"><a href="https://github.com/NozomiX1/AICS">GitHub</a></span>
-      </div>
-      <p class="r-desc">中科大 2023 春「智能计算系统」课程实验与作业。</p>
-      <div class="r-meta">Python · 课程</div>
-    </article>
-  </div>
-
-  <footer class="footer">
-    Xi Feng · 个人主页　|　由 <a href="https://pages.github.com" target="_blank" rel="noopener">GitHub Pages</a> 驱动
+  <footer class="footer" id="contact">
+    <div class="footer-identity">
+      <strong>Xi Feng</strong>
+      <span>AI Agent 工程方向</span>
+    </div>
+    <div class="footer-contact" aria-label="联系方式">
+      <a href="mailto:fengxi@ustc.edu">fengxi@ustc.edu</a>
+      <a href="https://github.com/NozomiX1" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a>
+    </div>
   </footer>
-
 </div>
 
 </body>
