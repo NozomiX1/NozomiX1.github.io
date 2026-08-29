@@ -77,33 +77,33 @@
       <article class="featured-project">
         <div class="project-topline">
           <div>
-            <p class="project-type">Game Content Quality Assurance</p>
+            <p class="project-type">Agent Evaluation &amp; Runtime Verification</p>
             <h3 class="p-name"><a href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">游戏教程质量审计 Agent</a></h3>
           </div>
           <a class="report-link" href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
         </div>
-        <p class="p-brief">面向游戏开发教程的持续质量审计系统。结合 LLM 扫描、独立核验与真实编辑器运行证据，检查事实可靠性和教学有效性。</p>
+        <p class="p-brief">不是让模型直接给教程打分，而是让它先提出疑点，再通过独立会话和真实游戏编辑器逐项核实。系统分别检查代码与 API 是否正确、教程是否支持目标读者学习，并支持全文和 Diff 输入。</p>
         <dl class="proof-grid" aria-label="项目结果">
-          <div><dt>18/18</dt><dd>已知主题覆盖</dd></div>
-          <div><dt>5/5</dt><dd>人为缺陷命中</dd></div>
-          <div><dt>26/26</dt><dd>候选核验闭环</dd></div>
+          <div><dt>5/5</dt><dd>受控教学缺陷检出</dd></div>
+          <div><dt>11 / 11 / 4</dt><dd>成立 / 驳回 / 材料不足</dd></div>
+          <div><dt>8/8</dt><dd>Diff 修改块覆盖</dd></div>
         </dl>
         <div class="project-detail-grid">
           <div>
             <h4>系统设计</h4>
-            <p>客观路线验证代码、API 与运行时主张，主观路线检查概念引入和学习迁移。两条路线独立扫描、独立核验，在结果层交换证据。</p>
+            <p>客观路线先检查代码和 API，无法确定时进入真实编辑器；主观路线先寻找可能妨碍学习的问题，再由独立会话查询前后章节复查。外层程序负责运行、结果检查、归档和中断恢复。</p>
           </div>
           <div>
             <h4>独立完成</h4>
-            <p>项目由我独立完成，包括审计目标建模、主客观评测协议、编辑器自动化、Agent 实现、实验和技术报告。接入真实游戏编辑器建立可执行证据，并完成多模型对照与增量审计验证。</p>
+            <p>我负责问题建模、实验设计、架构选择、结果分析和路线决策；通过对照实验否定了共享扫描、重型报告等复杂但没有稳定收益的方案，并借助开发 Agent 完成脚本实现与实验操作。</p>
           </div>
         </div>
         <div class="tech-stack" aria-label="技术栈">
           <strong>Stack</strong>
           <span>LLM Agent</span>
           <span>Editor Automation</span>
-          <span>Paired Evaluation</span>
-          <span>Evidence-grounded QA</span>
+          <span>Controlled Evaluation</span>
+          <span>Full + Diff Audit</span>
         </div>
       </article>
 
