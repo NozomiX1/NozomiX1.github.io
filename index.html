@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Xi Feng · AI Agent 工程方向</title>
-<meta name="description" content="Xi Feng 的 AI Agent 技术作品集，关注可评估、可验证的智能体系统与真实工作流。">
+<meta name="description" content="Xi Feng 的 AI Agent 技术作品集，涵盖真实游戏编辑器审计、院内部署的技术转移系统与 ACL 2025 多模态评测基准。">
 <link rel="preload" href="fonts/noto-serif-sc-vf-subset.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css?v=20260831-font-selfhost">
 </head>
@@ -39,112 +39,115 @@
     <section class="projectlist" id="projects" aria-labelledby="projects-title">
       <div class="section-head">
         <h2 class="lbl" id="projects-title">重点项目</h2>
-        <p>两个面向真实工作流的端到端 Agent 系统。点击技术报告可查看架构、实验和技术取舍。</p>
+        <p>三个经过完整评测的项目，覆盖真实游戏编辑器审计、院内部署的技术转移系统与 ACL 2025 多模态评测基准。</p>
       </div>
 
       <article class="featured-project">
         <div class="project-topline">
           <div>
-            <p class="project-type">Enterprise Knowledge Discovery</p>
-            <h3 class="p-name"><a href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">科研成果与专家检索 Agent</a></h3>
+            <p class="project-type">Game Agent Evaluation &amp; Runtime Verification</p>
+            <h3 class="p-name"><a href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">游戏教程质量审计 Agent</a></h3>
           </div>
-          <a class="report-link" href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
+          <a class="report-link" href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
         </div>
-        <p class="p-brief">面向论文与专利的知识发现系统。从自然语言需求出发，完成混合检索、多约束核验、专家发现与证据链组装。</p>
+        <p class="p-brief">将 Agent 接入真实游戏编辑器，先发现教程中的技术或教学疑点，再通过独立复核、Lua 探针和运行日志逐项确认；支持全文冷启动与 Git Diff 增量审查。</p>
         <dl class="proof-grid" aria-label="项目结果">
-          <div><dt>0.88</dt><dd>完整任务成功率</dd></div>
-          <div><dt>0.87</dt><dd>证据覆盖</dd></div>
-          <div><dt>0.81</dt><dd>专家发现成功率</dd></div>
+          <div><dt>23 章</dt><dd>教程全量运行</dd></div>
+          <div><dt>284 / 195</dt><dd>教学疑点 / 技术核验任务</dd></div>
+          <div><dt>163</dt><dd>复核后驳回的初步判断</dd></div>
         </dl>
         <div class="project-detail-grid">
           <div>
-            <h4>系统设计</h4>
-            <p>混合召回与三路 Query 找到候选，连续 Parent 负责全局决策，并行 Document Worker 隔离长文档核验，Runtime 管理状态、预算和证据。</p>
+            <h4>真实环境验证</h4>
+            <p>通过游戏编辑器 CLI 自动执行 Lua 探针，读取日志、对象状态和运行结果；当教程、API 文档与编辑器表现冲突时，以受控实验确定真实行为，并纠正模型对 API 可用性的误判。</p>
           </div>
           <div>
-            <h4>独立完成</h4>
-            <p>项目由我独立完成，包括需求分析、实验设计、检索与 Agent 架构、核心实现、评测和技术报告。通过失败归因定位 Chunk Recall 主瓶颈，并用消融实验删除没有独立收益的组件。</p>
+            <h4>审查与反馈闭环</h4>
+            <p>独立设计技术正确性与教学质量两条审查流程，由第二个 Agent 重新阅读原文、查阅资料或运行实验后确认、驳回或保留判断；抽样反馈后，多个问题经教程维护人员确认真实存在。</p>
           </div>
         </div>
         <div class="tech-stack" aria-label="技术栈">
           <strong>Stack</strong>
-          <span>Sparse + Dense Retrieval</span>
-          <span>Reranker</span>
-          <span>Parent + Worker</span>
-          <span>Evidence Store</span>
+          <span>Python</span>
+          <span>Lua</span>
+          <span>Editor CLI</span>
+          <span>Full + Diff Audit</span>
         </div>
       </article>
 
       <article class="featured-project">
         <div class="project-topline">
           <div>
-            <p class="project-type">Agent Evaluation &amp; Runtime Verification</p>
-            <h3 class="p-name"><a href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">游戏教程质量审计 Agent</a></h3>
+            <p class="project-type">Deployed Technology Transfer Agent</p>
+            <h3 class="p-name"><a href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">天机星：科研成果与专家检索 Agent</a></h3>
           </div>
-          <a class="report-link" href="reports/game-tutorial-audit-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
+          <div class="project-actions">
+            <a class="report-link secondary" href="https://www.sz.gov.cn/cn/xxgk/zfxxgj/bmdt/content/post_12002560.html" target="_blank" rel="noopener">政府报道 <span aria-hidden="true">→</span></a>
+            <a class="report-link" href="reports/research-expert-discovery-agent.html" target="_blank" rel="noopener">阅读技术报告 <span aria-hidden="true">→</span></a>
+          </div>
         </div>
-        <p class="p-brief">不是让模型直接给教程打分，而是让它先提出疑点，再通过独立会话和真实游戏编辑器逐项核实。系统分别检查代码与 API 是否正确、教程是否支持目标读者学习，并支持全文和 Diff 输入。</p>
+        <p class="p-brief">在深圳先进院实习期间独立负责方案设计、检索优化和 Agent 实现。系统已在院内部署使用，并由团队以“天机星大模型”在深圳首家“科技成果超市”活动中公开发布。</p>
         <dl class="proof-grid" aria-label="项目结果">
-          <div><dt>5/5</dt><dd>受控教学缺陷检出</dd></div>
-          <div><dt>11 / 11 / 4</dt><dd>成立 / 驳回 / 材料不足</dd></div>
-          <div><dt>8/8</dt><dd>Diff 修改块覆盖</dd></div>
+          <div><dt>0.88</dt><dd>文档检索成功率</dd></div>
+          <div><dt>0.81</dt><dd>专家检索成功率</dd></div>
+          <div><dt>302 → 132 s</dt><dd>P95 延迟</dd></div>
         </dl>
         <div class="project-detail-grid">
           <div>
-            <h4>系统设计</h4>
-            <p>客观路线先检查代码和 API，无法确定时进入真实编辑器；主观路线先寻找可能妨碍学习的问题，再由独立会话查询前后章节复查。外层程序负责运行、结果检查、归档和中断恢复。</p>
+            <h4>检索与训练</h4>
+            <p>面向 39,901 篇论文与专利、193.2 万个 Chunk，构建混合检索与三路 Query；审计高排名训练样本后发现不安全负例率达 42.2%，据此微调 Qwen3-Embedding，使 Chunk Recall@100 从 0.78 提升至 0.86。</p>
           </div>
           <div>
-            <h4>独立完成</h4>
-            <p>我负责问题建模、实验设计、架构选择、结果分析和路线决策；通过对照实验否定了共享扫描、重型报告等复杂但没有稳定收益的方案，并借助开发 Agent 完成脚本实现与实验操作。</p>
+            <h4>Agent 与 Runtime</h4>
+            <p>连续主 Agent 负责需求规划、全局搜索和专家聚合，并行文档子 Agent 完成单文档主题核验与缺失约束补证；Runtime 管理 ID、预算、状态、证据与失败恢复，输出可追溯至原文的结果。</p>
           </div>
         </div>
         <div class="tech-stack" aria-label="技术栈">
           <strong>Stack</strong>
-          <span>LLM Agent</span>
-          <span>Editor Automation</span>
-          <span>Controlled Evaluation</span>
-          <span>Full + Diff Audit</span>
+          <span>Hybrid Retrieval</span>
+          <span>Qwen3-Embedding</span>
+          <span>Parent + Worker</span>
+          <span>Evidence Store</span>
         </div>
       </article>
 
       <article class="featured-project paper-project">
         <div class="project-topline">
           <div>
-            <p class="project-type">Multimodal Benchmark Research</p>
+            <p class="project-type">ACL 2025 Main · Multimodal Benchmark</p>
             <h3 class="p-name"><a href="https://cii-bench.github.io/" target="_blank" rel="noopener">CII-Bench：中文图像寓意理解评测基准</a></h3>
           </div>
           <div class="project-actions">
-            <a class="report-link secondary" href="https://cii-bench.github.io/" target="_blank" rel="noopener">项目主页 <span aria-hidden="true">→</span></a>
-            <a class="report-link" href="https://arxiv.org/abs/2410.13854" target="_blank" rel="noopener">阅读论文 <span aria-hidden="true">→</span></a>
+            <a class="report-link secondary" href="https://github.com/MING-ZCH/CII-Bench" target="_blank" rel="noopener">数据与代码 <span aria-hidden="true">→</span></a>
+            <a class="report-link" href="https://aclanthology.org/2025.acl-long.700/" target="_blank" rel="noopener">ACL 论文 <span aria-hidden="true">→</span></a>
           </div>
         </div>
 
-        <p class="p-brief">面向中文图像高阶寓意理解的多模态评测基准。图像来自中文互联网并经过人工审核，同时覆盖中国传统文化内容，用于检验模型对高层语义和文化知识的理解。</p>
+        <p class="p-brief">以共同第一作者发表于 ACL 2025 Main，构建并公开包含 698 张中文语境图像、800 道深层寓意多选题的多模态评测基准，覆盖六类领域与六种图像类型。</p>
 
         <dl class="proof-grid" aria-label="论文结果">
-          <div><dt>64.4%</dt><dd>MLLM 最高准确率</dd></div>
-          <div><dt>78.2%</dt><dd>人类平均准确率</dd></div>
-          <div><dt>81.0%</dt><dd>人类最高准确率</dd></div>
+          <div><dt>64.4 / 78.2%</dt><dd>最佳模型 / 人类平均准确率</dd></div>
+          <div><dt>15.0 pp</dt><dd>新标注流程下模型平均降幅</dd></div>
+          <div><dt>98%</dt><dd>传统绘画自动 / 人工评分一致率</dd></div>
         </dl>
 
         <div class="project-detail-grid">
           <div>
-            <h4>项目成果</h4>
-            <p>构建并公开 CII-Bench，系统评测多个多模态大模型。实验揭示模型与人类之间的明显差距，以及模型在中国传统文化图像理解上的不足。</p>
+            <h4>人机协同标注</h4>
+            <p>针对纯人工标注速度慢、质量不稳定及题目区分度不足的问题，由我提出 LLM 生成候选含义、标注者筛选改写复核的流程；相较纯人工版本，同一批模型平均准确率降低 15.0 个百分点。</p>
           </div>
           <div>
-            <h4>我的贡献</h4>
-            <p>作为项目负责人之一，推进方案设计、数据构建、实验、论文撰写与公开发布的完整流程，并负责改进数据标注方法。</p>
+            <h4>实验发现</h4>
+            <p>评测 18 个多模态模型与 3 个文本基线，最佳模型仍落后人类 13.8 个百分点；CoT 与 Few-shot 未带来稳定收益，并揭示信息忽略、过度推断与文化知识不足等缺陷。</p>
           </div>
         </div>
 
         <div class="tech-stack" aria-label="研究关键词">
           <strong>Research</strong>
-          <span>Multimodal Benchmark</span>
-          <span>Data Annotation</span>
-          <span>Model Evaluation</span>
+          <span>Human-in-the-loop Annotation</span>
+          <span>MLLM Evaluation</span>
           <span>Chinese Visual Culture</span>
+          <span>ACL 2025</span>
         </div>
       </article>
     </section>

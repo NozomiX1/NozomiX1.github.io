@@ -42,6 +42,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
 .section-head{margin-bottom:24px}
 .section-head .lbl{font-size:1.28rem;letter-spacing:.04em}
 .section-head p{max-width:660px;margin:7px 0 0;color:var(--muted);font-size:.94rem}
+.projectlist .section-head p{max-width:none}
 .section-head.compact{margin-bottom:14px}
 
 /* About */
