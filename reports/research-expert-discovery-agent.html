@@ -5,19 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>科研成果与专家检索 Agent · 技术报告</title>
 <meta name="description" content="从领域检索失败诊断到文档级 Agent 执行。技术报告网页版。">
+<link rel="preload" href="../fonts/noto-serif-sc-vf-subset.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
 <style>
+  @font-face{
+    font-family:"Site Noto Serif SC";
+    src:url("../fonts/noto-serif-sc-vf-subset.woff2") format("woff2");
+    font-style:normal;
+    font-weight:200 900;
+    font-display:swap;
+  }
   :root{
     --ink:#1a1a1a; --body:#262626; --muted:#555; --faint:#777; --line:#999; --rule:#111;
     --accent:#3e454c; --accent-bg:#ececec; --accent-line:#c8c8c8;
-    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun","Times New Roman",Georgia,serif;
+    --serif:"Site Noto Serif SC","Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun","Times New Roman",Georgia,serif;
     --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{
     margin:0; background:#fff; color:var(--body); font-family:var(--serif);
-    line-height:1.95; font-size:16.5px; -webkit-font-smoothing:antialiased;
+    line-height:1.95; font-size:16.5px;
   }
   .wrap{max-width:960px; margin:0 auto; padding:0 26px}
   a{color:var(--ink); text-decoration:none}

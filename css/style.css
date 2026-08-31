@@ -1,10 +1,18 @@
 /* Xi Feng portfolio: restrained editorial system for technical reading. */
+@font-face{
+  font-family:"Site Noto Serif SC";
+  src:url("../fonts/noto-serif-sc-vf-subset.woff2") format("woff2");
+  font-style:normal;
+  font-weight:200 900;
+  font-display:swap;
+}
+
 :root{
   color-scheme:light dark;
   --paper:#fbfbfa;--surface:#f3f4f3;--ink:#181a1b;--body:#2c2e2f;
   --muted:#565b5d;--faint:#74797b;--rule:#d8dcda;--rule-strong:#242728;
   --accent:#245b75;
-  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","Times New Roman",Georgia,serif;
+  --serif:"Site Noto Serif SC","Noto Serif SC","Source Han Serif SC","Songti SC","STSong","Times New Roman",Georgia,serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,"Courier New",monospace;
 }
 
@@ -12,7 +20,7 @@
 html{scroll-behavior:smooth}
 body{
   margin:0;background:var(--paper);color:var(--body);font-family:var(--serif);
-  font-size:16px;line-height:1.85;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  font-size:16px;line-height:1.85;text-rendering:optimizeLegibility;
 }
 .wrap{max-width:1040px;margin:0 auto;padding:0 32px}
 main{display:block}

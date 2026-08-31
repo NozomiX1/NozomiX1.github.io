@@ -9,6 +9,13 @@ site/
 ├── index.html           主页：关于 + 项目 + 仓库
 ├── css/
 │   └── style.css        唯一一份设计系统，全站共用
+├── fonts/
+│   ├── noto-serif-sc-vf-subset.woff2  自托管思源宋体网页子集
+│   ├── OFL.txt                         字体许可证
+│   └── README.md                       字体来源与更新方法
+├── reports/             技术报告页面
+├── scripts/
+│   └── build_font_subset.py            字体子集生成脚本
 └── README.md
 ```
 
@@ -78,6 +85,18 @@ site/
 
 - **名字 / 简介 / 关键词 / GitHub 链接**：改 `index.html` 顶部 `.titleblock` 和「关　于」区块（已留注释）。
 - **颜色 / 字体**：改 `css/style.css` 顶部的 `:root` 变量。
+
+## 更新网页字体
+
+主页和技术报告共用 `fonts/noto-serif-sc-vf-subset.woff2`。字体已经预留
+GB2312 一级常用汉字；如果新增较多生僻字或符号，重新生成一次：
+
+```powershell
+python -m pip install "fonttools[woff]==4.59.2"
+python scripts/build_font_subset.py
+```
+
+字体来源、许可证和覆盖范围见 `fonts/README.md`。
 
 ## 一个建议
 
