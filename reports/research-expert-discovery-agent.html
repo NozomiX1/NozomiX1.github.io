@@ -1046,7 +1046,8 @@ Agent
 <p>每个文档子 Agent 的边界为：</p>
 <pre><code class="language-text">输入：一篇文档、任务约束、初始 Chunk、局部预算
 输出：一个结构化文档结果
-不能：修改其他文档、做全局排序、选择最终专家或结束任务
+不能：修改其他文档、做全局排序、选择最终专家或结束主任务
+结束：调用 finish_document_check 提交结构化结果并结束当前文档检查
 </code></pre>
 <p><strong>文档子 Agent 的局部上下文短而连续，多篇文档可以并行检查。</strong>主 Agent 不接收子 Agent 的完整对话，只接收<strong>文档 metadata、主题判断、约束支持情况和证据 Chunk ID</strong>。结构化状态继续由运行时维护，用于监控、预算、恢复和审计，但<strong>不再作为完整快照覆盖主 Agent 的提示词</strong>。</p>
 </section><section id="s9"><h2>9　工具与运行时设计</h2>
@@ -1102,6 +1103,11 @@ Agent
 <td><code>inspect_chunks</code></td>
 <td>读取关键检索片段所属上下文段并核对元数据</td>
 </tr>
+<tr>
+<td>文档子 Agent</td>
+<td><code>finish_document_check</code></td>
+<td>提交结构化文档结果并结束当前文档检查</td>
+</tr>
 </tbody>
 </table>
 <p><code>search_within_document</code> 对文档子 Agent 开放 Query，因为初始三路 Query 面向全局召回，不一定是最适合当前文档或当前缺失约束的表达。文档子 Agent 可以根据已读证据生成更具体的文档内 Query，但<strong>搜索结果本身不提供约束支持标签</strong>。只有文档子 Agent 阅读 Chunk 后，才能<strong>判断支持、部分支持或不支持</strong>。</p>
@@ -1125,6 +1131,7 @@ Agent
   &quot;worker_stop_reason&quot;: &quot;local_budget_exhausted&quot;
 }
 </code></pre>
+<p>文档子 Agent 只能通过 <code>finish_document_check</code> 提交检查结果。运行时校验文档 ID、约束状态、证据 Chunk 归属和必填字段后，将当前文档检查标记为完成，并把结构化结果返回主 Agent。该工具<strong>只结束当前文档检查，不结束主任务</strong>。</p>
 <p>每个字段都有明确消费者：</p>
 <table class="def">
 <caption><b>表 19</b>　文档子 Agent 检查结果的字段与消费者</caption>
